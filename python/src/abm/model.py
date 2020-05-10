@@ -27,6 +27,8 @@ class Model():
         # Set the model parameters
         self._parameters = parameters
 
+        # Set the model agents
+        self._agents = self._create_agents(self._parameters.num_of_particles)
 
     def __str__(self):
         return \
@@ -50,6 +52,20 @@ class Model():
 
         # Return parameters
         return Parameters(wind_settings, environment, num_of_particles)
+
+    def _create_agents(self, num_of_agents):
+
+        # Initialize agents list
+        agents = []
+
+        # Create each agent
+        for i in range(num_of_agents):
+            agents.append(agentframework.Agent(
+                self._parameters.wind_settings,
+                self._parameters._environment.bomb_position
+            ))
+
+        return agents
 
 
 class Parameters():
