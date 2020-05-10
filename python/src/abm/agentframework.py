@@ -10,10 +10,14 @@ Provides classes used to represent agents and their data.
 
 import csv
 
+from . import logger
+
+# Set default values
 DEFAULT_WIND_NORTH_PERCENTAGE = .1
 DEFAULT_WIND_EAST_PERCENTAGE = .75
 DEFAULT_WIND_SOUTH_PERCENTAGE = .1
 DEFAULT_WIND_WEST_PERCENTAGE = .05
+DEFAULT_BOMB_POSITION_MARK = 255
 
 class Agent():
 
@@ -35,6 +39,17 @@ class WindSettings():
         self._east_percentage = east_percentage
         self._south_percentage = south_percentage
         self._west_percentage = west_percentage
+
+    def __str__(self):
+        return """Chance of north travel: {}
+Chance of east travel: {}
+Chance of south travel: {}
+Chance of west travel: {}""".format(
+    self._north_percentage,
+    self._east_percentage,
+    self._south_percentage,
+    self._west_percentage
+)
 
     @property
     def north_percentage(self):
@@ -99,6 +114,9 @@ class Position():
         self._x = x
         self._y = y
 
+    def __str__(self):
+        return """{},{}""".format(self.x, self.y)
+
     @property
     def x(self):
         """
@@ -130,8 +148,21 @@ class Position():
 
 class Environment():
 
-    def __init__(self, plane):
+    def __init__(self, plane, bomb_position):
         self._plane = plane
+        self._bomb_position = bomb_position
+
+        self._width = len(self._plane)
+        self._height = len(self._plane[0])
+
+    def __str__(self):
+        return """Size: {}x{}
+Bomb Position: {}""".format(
+    self._width,
+    self._height,
+    self._bomb_position
+)
+
 
     @property
     def plane(self):
@@ -148,10 +179,13 @@ class Environment():
         del self._plane
 
     @staticmethod
-    def read_from_file(file_path):
+    def read_from_file(file_path, bomb_position_mark=DEFAULT_BOMB_POSITION_MARK):
 
         # Initialize the environment plane
         environment_plane = []
+
+        # Initialize the bomb position
+        bomb_position = None
 
         # Open the given file
         try:
@@ -159,19 +193,43 @@ class Environment():
                 
                 # Create a CSV reader
                 reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
-                
+
+                # Store a reference to the current row being processed
+                row_index = 0
+
                 # Read in each row and column to obtain the 2-D environment data
                 for row in reader:
                     row_list = []
+
+                    # Store a reference to the current column being processed
+                    column_index = 0
+
                     for value in row:
                         row_list.append(value)
+
+                        # Store the bomb position when found
+                        if value == bomb_position_mark:
+                            bomb_position = Position(column_index, row_index)
+
+                        # Increment the current column index
+                        column_index += 1
+
+                    # Add the environment row
                     environment_plane.append(row_list)
+
+                    # Increment the current row index
+                    row_index += 1
         except:
-            # Display error message on enviroment read failure
+            # Raise an error on enviroment read failure
             raise Exception("Unable to read environment from file: {}".format(file_path))
             
             # Abort creation of new environment
             return
+
+        # Raise an error when bomb position is not found
+        if bomb_position is None:
+            raise Exception("Environment does not contain a bomb position (indicated by value: {})" \
+                .format(bomb_position_mark))
         
         # Return the resulting environment
-        return Environment(environment_plane)
+        return Environment(environment_plane, bomb_position)

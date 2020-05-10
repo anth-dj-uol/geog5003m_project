@@ -8,16 +8,13 @@ A project for the University of Leeds GEOG5003M course.
 @author: Anthony Jarrett
 """
 
-from datetime import datetime
-from abm import model
-
-def log(message):
-    print("{} - {}".format(datetime.now().isoformat(), message))
+from abm import model, logger
 
 def main():
-    log("Starting Bacterial Bomb Agent-Based Model...")
+    logger.log("Starting Bacterial Bomb Agent-Based Model...")
 
-    model.Model()
+    initial_model = model.Model()
+    logger.log("Created initial model:\n{}", initial_model)
 
 # Run the main function when invoked as a script
 if __name__ == '__main__':

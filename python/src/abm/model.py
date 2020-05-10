@@ -10,7 +10,7 @@ Provides classes used to represent agent-based models.
 
 import os
 
-from . import agentframework
+from . import agentframework, logger
 
 DEFAULT_NUM_OF_PARTICLES = 5000
 DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + \
@@ -27,6 +27,14 @@ class Model():
         # Set the model parameters
         self._parameters = parameters
 
+    def __str__(self):
+        return \
+"""=======================================
+                Model
+---------------------------------------
+
+{}
+=======================================""".format(self._parameters)
 
     def _get_default_parameters(self):
 
@@ -50,6 +58,22 @@ class Parameters():
         self._wind_settings = wind_settings
         self._environment = environment
         self._num_of_particles = num_of_particles
+
+    def __str__(self):
+        return \
+"""Wind Settings
+{}
+
+Environment
+{}
+
+Number of particles
+{}
+""".format(
+    self._wind_settings,
+    self._environment,
+    self.num_of_particles
+)
 
     @property
     def wind_settings(self):
