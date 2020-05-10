@@ -15,7 +15,10 @@ def main():
 
     # Create initial model
     initial_model = model.Model()
-    logger.log("Created initial model:\n{}", initial_model)
+    logger.log("Created initial model:\n{}\n", initial_model)
+
+    # Run the model
+    initial_model.run()
 
 
 # Run the main function when invoked as a script

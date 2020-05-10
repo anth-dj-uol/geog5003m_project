@@ -28,6 +28,9 @@ class Agent():
     def move(self):
         pass
 
+    def can_move(self):
+        return False
+
 
 class WindSettings():
 

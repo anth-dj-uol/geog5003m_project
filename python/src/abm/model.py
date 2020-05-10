@@ -30,6 +30,7 @@ class Model():
         # Set the model agents
         self._agents = self._create_agents(self._parameters.num_of_particles)
 
+
     def __str__(self):
         return \
 """=======================================
@@ -38,6 +39,35 @@ class Model():
 
 {}
 =======================================""".format(self._parameters)
+
+
+    def run(self):
+
+        logger.log("Starting model simulation...")
+
+        # Track the iteration count
+        iteration_count = 0
+
+        # Track whether the model can iterate
+        can_iterate = True
+
+        while can_iterate:
+            iteration_count += 1
+            can_iterate = self.iterate()
+        
+        logger.log("Done model simulation at iteration {}", iteration_count)
+
+    def iterate(self):
+
+        can_iterate = False
+
+        # Move each agent in the model
+        for agent in self._agents:
+            agent.move()
+            if agent.can_move():
+                can_iterate = True
+
+        return can_iterate
 
     def _get_default_parameters(self):
 
