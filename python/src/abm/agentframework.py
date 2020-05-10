@@ -178,6 +178,21 @@ Bomb Position: {}""".format(
         """
         del self._plane
 
+    @property
+    def bomb_position(self):
+        """
+        Get the bomb position.
+        """
+        return self._bomb_position
+
+    @bomb_position.deleter
+    def bomb_position(self):
+        """
+        Delete the bomb position property.
+        """
+        del self._bomb_position
+
+
     @staticmethod
     def read_from_file(file_path, bomb_position_mark=DEFAULT_BOMB_POSITION_MARK):
 

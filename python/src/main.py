@@ -13,8 +13,10 @@ from abm import model, logger
 def main():
     logger.log("Starting Bacterial Bomb Agent-Based Model...")
 
+    # Create initial model
     initial_model = model.Model()
     logger.log("Created initial model:\n{}", initial_model)
+
 
 # Run the main function when invoked as a script
 if __name__ == '__main__':

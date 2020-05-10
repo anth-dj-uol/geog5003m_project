@@ -27,6 +27,7 @@ class Model():
         # Set the model parameters
         self._parameters = parameters
 
+
     def __str__(self):
         return \
 """=======================================
@@ -97,25 +98,25 @@ Number of particles
         del self._wind_settings
 
     @property
-    def bomb_location(self):
+    def environment(self):
         """
-        Get the bomb location.
+        Get the environment.
         """
-        return self._bomb_location
+        return self._environment
 
-    @bomb_location.setter
-    def bomb_location(self, value):
+    @environment.setter
+    def environment(self, value):
         """
-        Set the bomb location.
+        Set the environment.
         """
-        self._bomb_location = value
+        self._environment = value
 
-    @bomb_location.deleter
-    def bomb_location(self):
+    @environment.deleter
+    def environment(self):
         """
-        Delete the bomb location property.
+        Delete the environment property.
         """
-        del self._bomb_location
+        del self._environment
 
     @property
     def num_of_particles(self):
