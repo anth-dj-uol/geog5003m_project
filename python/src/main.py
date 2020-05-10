@@ -9,6 +9,7 @@ A project for the University of Leeds GEOG5003M course.
 """
 
 from datetime import datetime
+from abm import model
 
 def log(message):
     print("{} - {}".format(datetime.now().isoformat(), message))
@@ -16,6 +17,7 @@ def log(message):
 def main():
     log("Starting Bacterial Bomb Agent-Based Model...")
 
+    model.Model()
 
 # Run the main function when invoked as a script
 if __name__ == '__main__':

@@ -8,50 +8,69 @@ Provides classes used to represent agent-based models.
 @author: Anthony Jarrett
 """
 
-import csv
+import os
 
+from . import agentframework
 
 DEFAULT_NUM_OF_PARTICLES = 5000
-DEFAULT_BOMB_LOCATION_FILE_PATH = 'wind.raster'
-DEFAULT_LIMIT_ENVIRONMENT= False
+DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + \
+    os.sep + '../wind.raster'
 
 class Model():
 
-    def __init__(self, parameters):
+    def __init__(self, parameters=None):
+
+        # If parameters are not provided, use default values
+        if parameters is None:
+            parameters = self._get_default_parameters()
+
+        # Set the model parameters
         self._parameters = parameters
+
+
+    def _get_default_parameters(self):
+
+        # Create default wind settings
+        wind_settings = agentframework.WindSettings()
+
+        # Load environment
+        environment = agentframework.Environment.read_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH)
+
+        # Set default number of particles
+        num_of_particles = DEFAULT_NUM_OF_PARTICLES
+
+        # Return parameters
+        return Parameters(wind_settings, environment, num_of_particles)
 
 
 class Parameters():
 
-    def __init__(self, wind_model, bomb_location,
-        num_of_particles=DEFAULT_NUM_OF_PARTICLES,
-        bomb_location_file_path=DEFAULT_BOMB_LOCATION_FILE_PATH,
-        limit_environment=DEFAULT_LIMIT_ENVIRONMENT):
-        self._wind_model = wind_model
-        self._bomb_location = bomb_location
+    def __init__(self, wind_settings, environment,
+        num_of_particles=DEFAULT_NUM_OF_PARTICLES):
+        self._wind_settings = wind_settings
+        self._environment = environment
         self._num_of_particles = num_of_particles
-        self._limit_environment = limit_environment
 
     @property
-    def wind_model(self):
+    def wind_settings(self):
         """
-        Get the wind model.
+        Get the wind settings.
         """
-        return self._wind_model
+        return self._wind_settings
 
-    @wind_model.setter
-    def wind_model(self, value):
+    @wind_settings.setter
+    def wind_settings(self, value):
         """
-        Set the wind model.
+        Set the wind settings.
         """
-        self._wind_model = value
+        self._wind_settings = value
 
-    @wind_model.deleter
-    def wind_model(self):
+    @wind_settings.deleter
+    def wind_settings(self):
         """
-        Delete the wind model property.
+        Delete the wind settings property.
         """
-        del self._wind_model
+        del self._wind_settings
 
     @property
     def bomb_location(self):
@@ -67,7 +86,7 @@ class Parameters():
         """
         self._bomb_location = value
 
-    @wind_model.deleter
+    @bomb_location.deleter
     def bomb_location(self):
         """
         Delete the bomb location property.
@@ -88,7 +107,7 @@ class Parameters():
         """
         self._num_of_particles = value
     
-    @wind_model.deleter
+    @num_of_particles.deleter
     def num_of_particles(self):
         """
         Delete the number of particles property.
@@ -96,32 +115,3 @@ class Parameters():
         del self._num_of_particles
 
 
-class LocationReader():
-
-    def __init__(self, file_path):
-        self._file_path = file_path
-
-    def read_location(self):
-
-        # Initialize the environment plane
-        environment_plane = []
-
-        # Open the given file
-        try:
-            with open(self._file_path, newline='') as f:
-                
-                # Create a CSV reader
-                reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
-                
-                # Read in each row and column to obtain the 2-D environment data
-                for row in reader:
-                    row_list = []
-                    for value in row:
-                        row_list.append(value)
-                    environment_plane.append(row_list)
-        except:
-            # Display error message on enviroment read failure
-            raise Exception("Unable to read environment from file: {}".format(self._file_path))
-            
-            # Abort creation of new environment
-            return

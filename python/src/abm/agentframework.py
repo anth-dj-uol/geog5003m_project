@@ -8,20 +8,29 @@ Provides classes used to represent agents and their data.
 @author: Anthony Jarrett
 """
 
+import csv
+
+DEFAULT_WIND_NORTH_PERCENTAGE = .1
+DEFAULT_WIND_EAST_PERCENTAGE = .75
+DEFAULT_WIND_SOUTH_PERCENTAGE = .1
+DEFAULT_WIND_WEST_PERCENTAGE = .05
+
 class Agent():
 
-    def __init__(self, wind_model, start_position):
-        self._wind_model = wind_model
+    def __init__(self, wind_settings, start_position):
+        self._wind_settings = wind_settings
         self._position = start_position
 
     def move(self):
         pass
 
 
-class Wind():
+class WindSettings():
 
-    def __init__(self, north_percentage, east_percentage, south_percentage,
-                 west_percentage):
+    def __init__(self, north_percentage=DEFAULT_WIND_NORTH_PERCENTAGE,
+        east_percentage=DEFAULT_WIND_EAST_PERCENTAGE,
+        south_percentage=DEFAULT_WIND_SOUTH_PERCENTAGE,
+        west_percentage=DEFAULT_WIND_WEST_PERCENTAGE):
         self._north_percentage = north_percentage
         self._east_percentage = east_percentage
         self._south_percentage = south_percentage
@@ -118,3 +127,51 @@ class Position():
         """
         del self._y
 
+
+class Environment():
+
+    def __init__(self, plane):
+        self._plane = plane
+
+    @property
+    def plane(self):
+        """
+        Get the plane 2-D array.
+        """
+        return self._plane
+
+    @plane.deleter
+    def plane(self):
+        """
+        Delete the plane property.
+        """
+        del self._plane
+
+    @staticmethod
+    def read_from_file(file_path):
+
+        # Initialize the environment plane
+        environment_plane = []
+
+        # Open the given file
+        try:
+            with open(file_path, newline='') as f:
+                
+                # Create a CSV reader
+                reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
+                
+                # Read in each row and column to obtain the 2-D environment data
+                for row in reader:
+                    row_list = []
+                    for value in row:
+                        row_list.append(value)
+                    environment_plane.append(row_list)
+        except:
+            # Display error message on enviroment read failure
+            raise Exception("Unable to read environment from file: {}".format(file_path))
+            
+            # Abort creation of new environment
+            return
+        
+        # Return the resulting environment
+        return Environment(environment_plane)
