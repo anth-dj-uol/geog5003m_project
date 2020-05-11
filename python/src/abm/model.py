@@ -79,8 +79,8 @@ class Model():
         # Create default wind settings
         wind_settings = agentframework.WindSettings()
 
-        # Load environment
-        environment = agentframework.Environment.read_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH)
+        # Load bomb environment
+        environment = agentframework.BombEnvironment.create_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH)
 
         # Set default number of particles
         num_of_particles = DEFAULT_NUM_OF_PARTICLES

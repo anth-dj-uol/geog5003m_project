@@ -301,20 +301,17 @@ class Position():
 
 class Environment():
 
-    def __init__(self, plane, bomb_position):
+    def __init__(self, plane):
         self._plane = plane
-        self._bomb_position = bomb_position
 
         self._width = len(self._plane)
         self._height = len(self._plane[0])
 
     def __str__(self):
-        return """Size: {}x{}
-Bomb Position: {}""".format(
-    self._width,
-    self._height,
-    self._bomb_position
-)
+        return """Size: {}x{}""".format(
+            self._width,
+            self._height
+        )
 
 
     @property
@@ -331,6 +328,34 @@ Bomb Position: {}""".format(
         """
         del self._plane
 
+
+    @staticmethod
+    def create_from_size(rows, columns, initial_value=0):
+
+        plane = []
+        for i in range(rows):
+
+            row = []
+            for j in range(columns):
+                row.append(initial_value)
+            plane.append(row)
+        return Environment(plane)
+
+
+class BombEnvironment(Environment):
+
+    def __init__(self, plane, bomb_position):
+        super().__init__(plane)
+        self._bomb_position = bomb_position
+
+    def __str__(self):
+        return """Size: {}x{}
+Bomb Position: {}""".format(
+    self._width,
+    self._height,
+    self._bomb_position
+)
+
     @property
     def bomb_position(self):
         """
@@ -345,9 +370,8 @@ Bomb Position: {}""".format(
         """
         del self._bomb_position
 
-
     @staticmethod
-    def read_from_file(file_path, bomb_position_mark=DEFAULT_BOMB_POSITION_MARK):
+    def create_from_file(file_path, bomb_position_mark=DEFAULT_BOMB_POSITION_MARK):
 
         # Initialize the environment plane
         environment_plane = []
@@ -400,4 +424,4 @@ Bomb Position: {}""".format(
                 .format(bomb_position_mark))
         
         # Return the resulting environment
-        return Environment(environment_plane, bomb_position)
+        return BombEnvironment(environment_plane, bomb_position)
