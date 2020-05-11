@@ -154,6 +154,17 @@ class Controller():
         if num_of_particles < 0:
             raise Exception("Number of particles must be greater than 0")
 
+        # Validate and get building height in metres
+        building_height_metres = None
+        building_height_metres_text = self.view.building_height_metres_entry.get()
+        try:
+            building_height_metres = int(building_height_metres_text)
+        except:
+            raise Exception("Building height must be an integer")
+        
+        if num_of_particles < 0:
+            raise Exception("Building height must be greater than 0")
+
         # Validate particle fall percentage sum
         particle_fall_sum = up_percentage + down_percentage + no_change_percentage
         if particle_fall_sum != 100:
@@ -177,7 +188,8 @@ class Controller():
                 self._get_percentage_decimal(south_percentage),
                 self._get_percentage_decimal(west_percentage)
             ),
-            num_of_particles
+            num_of_particles,
+            building_height_metres
         )
 
         # Update view parameters
@@ -231,9 +243,13 @@ class Controller():
         self.view._set_entry_field_value(self.view.no_change_percentage_entry,
                 self._percent_to_int(self.model.parameters.particle_fall_settings.no_change_percentage))
 
-        # Update number of particles entry field values
+        # Update number of particles entry field value
         self.view._set_entry_field_value(self.view.num_of_particles_entry,
                                    self.model.parameters.num_of_particles)
+
+        # Update building height entry field value
+        self.view._set_entry_field_value(self.view.building_height_metres_entry,
+                                   self.model.parameters.building_height_metres)
 
 
     def _percent_to_int(self, value):

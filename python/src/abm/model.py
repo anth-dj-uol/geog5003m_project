@@ -13,7 +13,7 @@ import os
 from . import agentframework, logger
 
 DEFAULT_NUM_OF_PARTICLES = 5000
-DEFAULT_BOMB_HEIGHT_METRES = 75
+DEFAULT_BUILDING_HEIGHT_METRES = 75
 DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + \
     os.sep + '../wind.raster'
 
@@ -105,18 +105,27 @@ class Model():
 
         # Move each agent in the model
         for agent in self._agents:
-            agent.move()
-            agent.fall()
-            if agent.can_move():
+
+            # Check that the particle can still fall
+            if agent.can_fall():
+
+                # Move the particle according to the wind settings
+                agent.move()
+
+                # Drop the particle according to the particle fall settings
+                agent.fall()
+
+                # Note that the particle can still fall
                 can_iterate = True
 
         return can_iterate
 
 
-    def update_parameters(self, particle_fall_settings, wind_settings, num_of_particles):
+    def update_parameters(self, particle_fall_settings, wind_settings, num_of_particles, building_height_metres):
         self.parameters.particle_fall_settings = particle_fall_settings
         self.parameters.wind_settings = wind_settings
         self.parameters.num_of_particles = num_of_particles
+        self.parameters.building_height_metres = building_height_metres
 
 
     def _get_particle_density_environment(self):
@@ -153,10 +162,10 @@ class Model():
         num_of_particles = DEFAULT_NUM_OF_PARTICLES
 
         # Set default bomb height
-        bomb_height_metres = DEFAULT_BOMB_HEIGHT_METRES
+        building_height_metres = DEFAULT_BUILDING_HEIGHT_METRES
 
         # Return parameters
-        return Parameters(particle_fall_settings, wind_settings, environment, num_of_particles, bomb_height_metres)
+        return Parameters(particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres)
 
     def _create_agents(self, num_of_agents):
 
@@ -169,7 +178,7 @@ class Model():
                 self._parameters.particle_fall_settings,
                 self._parameters.wind_settings,
                 self._parameters.environment.bomb_position,
-                self._parameters.bomb_height_metres
+                self._parameters.building_height_metres
             ))
 
         return agents
@@ -177,12 +186,12 @@ class Model():
 
 class Parameters():
 
-    def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, bomb_height_metres):
+    def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres):
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._environment = environment
         self._num_of_particles = num_of_particles
-        self._bomb_height_metres = bomb_height_metres
+        self._building_height_metres = building_height_metres
 
     def __str__(self):
         return \
@@ -198,14 +207,14 @@ Environment
 Number of particles
 {}
 
-Bomb height (m)
+Building height (m)
 {}
 """.format(
     self.particle_fall_settings,
     self.wind_settings,
     self.environment,
     self.num_of_particles,
-    self.bomb_height_metres
+    self.building_height_metres
 )
 
     @property
@@ -293,23 +302,23 @@ Bomb height (m)
         del self._num_of_particles
 
     @property
-    def bomb_height_metres(self):
+    def building_height_metres(self):
         """
-        Get the bomb height in metres.
+        Get the building height in metres.
         """
-        return self._bomb_height_metres
+        return self._building_height_metres
     
-    @bomb_height_metres.setter
-    def bomb_height_metres(self, value):
+    @building_height_metres.setter
+    def building_height_metres(self, value):
         """
-        Set the bomb height in metres.
+        Set the building height in metres.
         """
-        self._bomb_height_metres = value
+        self._building_height_metres = value
     
-    @bomb_height_metres.deleter
-    def bomb_height_metres(self):
+    @building_height_metres.deleter
+    def building_height_metres(self):
         """
-        Delete the bomb height property.
+        Delete the building height property.
         """
-        del self._bomb_height_metres
+        del self._building_height_metres
 

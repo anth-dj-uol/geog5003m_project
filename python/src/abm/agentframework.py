@@ -32,7 +32,7 @@ class Agent():
     def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
-        self._position = Position.copy(start_position)
+        self._position = Position.create_from(start_position)
         self._building_height = building_height
         self._height = building_height
 
@@ -54,29 +54,31 @@ class Agent():
         # Calculate the particle direction using the particle fall settings
         direction = self._wind_settings.get_next()
         if direction == Direction.NORTH:
-            self._position.y = self._position.y + 1
+            self._position.y += 1
         elif direction == Direction.EAST:
-            self._position.x = self._position.x + 1
+            self._position.x += 1
         elif direction == Direction.SOUTH:
-            self._position.y = self._position.y - 1
+            self._position.y -= 1
         else:
-            self._position.x = self._position.x - 1
+            self._position.x -= 1
 
     def fall(self):
 
-        # If below the building height, particle always falls
-        if self._height < self._building_height:
-            self._height -= 1
+        if self.can_fall():
 
-        else:
-            # Calculate the fall using the particle fall settings
-            fall = self._particle_fall_settings.get_next()
-            if fall == Fall.UP:
-                self._height += 1
-            elif fall == Fall.DOWN:
+            # If below the building height, particle always falls
+            if self._height < self._building_height:
                 self._height -= 1
 
-    def can_move(self):
+            else:
+                # Calculate the fall using the particle fall settings
+                fall = self._particle_fall_settings.get_next()
+                if fall == Fall.UP:
+                    self._height += 1
+                elif fall == Fall.DOWN:
+                    self._height -= 1
+
+    def can_fall(self):
         return self._height > 0
 
 class Fall(Enum):
@@ -101,6 +103,9 @@ class ParticleFallSettings():
         # Precalculate thresholds to improve performance
         self._up_threshold_mark = self._up_percentage
         self._down_threshold_mark = self._up_threshold_mark + self._down_percentage
+
+        logger.log("Up threshold mark: {}", self._up_threshold_mark)
+        logger.log("Down threshold mark: {}", self._down_threshold_mark)
 
 
     def __str__(self):
@@ -191,6 +196,10 @@ class WindSettings():
         self._north_percentage_threshold = self._north_percentage
         self._east_percentage_threshold = self._north_percentage_threshold + self._east_percentage
         self._south_percentage_threshold = self._east_percentage_threshold + self._south_percentage
+
+        logger.log("North threshold mark: {}", self._north_percentage_threshold)
+        logger.log("East threshold mark: {}", self._east_percentage_threshold)
+        logger.log("South threshold mark: {}", self._south_percentage_threshold)
 
 
     def __str__(self):
@@ -323,7 +332,7 @@ class Position():
         del self._y
 
     @staticmethod
-    def copy(original):
+    def create_from(original):
         return Position(original.x, original.y)
 
 
@@ -392,13 +401,20 @@ class Environment():
     @staticmethod
     def create_from_size(height, width, initial_value=0):
 
+        # Create initial plane array
         plane = []
         for i in range(height):
 
+            # Create row array
             row = []
             for j in range(width):
+
+                # Add the new cell to the current row
                 row.append(initial_value)
+
+            # Add the new row to the environment plane
             plane.append(row)
+
         return Environment(plane)
 
 

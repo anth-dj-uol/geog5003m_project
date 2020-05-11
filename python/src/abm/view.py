@@ -19,8 +19,8 @@ from . import logger
 
 
 # Set the plot color map
-COLOR_MAP = cm.get_cmap('magma', 255)
-COLOR_MAP.set_under(color='white')  
+COLOR_MAP = cm.get_cmap('viridis', 255)
+COLOR_MAP.set_under(color='grey')  
 
 class View():
 
@@ -88,13 +88,24 @@ class View():
             parameters_frame, "Number of particles:",
             "",
             3, 2, 3, 3)
-        
+
+        self.building_height_metres_entry = self._insert_labelled_entry(
+            parameters_frame, "Building height (m):",
+            "",
+            4, 2, 4, 3)
+
         # Add a button to update parameters
         load_button = tkinter.Button(parameters_frame, text="Update Model",
                                      command=self._on_load_parameters)
         load_button.grid(row=0, column=4, padx=12, rowspan=2)
 
-        
+
+        # Add a button to run the model
+        run_button = tkinter.Button(parameters_frame, text="Run Model",
+                                     command=self._on_run_model)
+        run_button.grid(row=2, column=4, padx=12, rowspan=2)
+
+
         # Add the parameters frame to the GUI
         parameters_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=8, pady=8)
 
