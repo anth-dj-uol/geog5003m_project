@@ -28,6 +28,11 @@ From the root directory of the repository, run:
 
 ## Testing Instructions
 
+From the project root directory, run:
+
+```
+python -m unittest discover python/tests/ "*_test.py"
+```
 
 ## Code Structure
 
