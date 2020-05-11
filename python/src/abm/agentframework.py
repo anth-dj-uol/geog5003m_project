@@ -354,10 +354,17 @@ class Position():
 class Environment():
 
     def __init__(self, plane):
-        self._plane = plane
 
-        self._width = len(self._plane)
-        self._height = len(self._plane[0])
+        # Check that a valid plane is passed
+        if  not isinstance(plane, list) or \
+            len(plane) <= 0 or \
+            not isinstance(plane[0], list):
+            raise Exception("Plane must be a 2-D array")
+
+        # Set the instance properties
+        self._plane = plane
+        self._height = len(self._plane)
+        self._width = len(self._plane[0])
 
     def __str__(self):
         return """Size: {}x{}""".format(
@@ -414,7 +421,7 @@ class Environment():
         return position.y < self.height and position.x < self.width
 
     @staticmethod
-    def create_from_size(height, width, initial_value=0):
+    def create_from_size(width, height, initial_value=0):
 
         # Create initial plane array
         plane = []

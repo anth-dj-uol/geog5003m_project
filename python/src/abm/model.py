@@ -158,8 +158,8 @@ class Model():
 
         # Create a new environment using the size of the bomb environment
         environment = agentframework.Environment.create_from_size(
-            self._parameters._environment.height,
-            self._parameters._environment.width
+            self._parameters._environment.width,
+            self._parameters._environment.height
         )
         
         # Increment the environment value at the position of each agent

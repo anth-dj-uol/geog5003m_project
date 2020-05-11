@@ -64,7 +64,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 15
 
         try:
-            # Create pwind settings
+            # Create wind settings
             agentframework.WindSettings(
                 north_percentage,
                 east_percentage,
