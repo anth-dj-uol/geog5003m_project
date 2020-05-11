@@ -72,6 +72,9 @@ class Model():
 
     def _get_default_parameters(self):
 
+        # Create default particle fall settings
+        particle_fall_settings = agentframework.ParticleFallSettings()
+
         # Create default wind settings
         wind_settings = agentframework.WindSettings()
 
@@ -85,7 +88,7 @@ class Model():
         bomb_height_metres = DEFAULT_BOMB_HEIGHT_METRES
 
         # Return parameters
-        return Parameters(wind_settings, environment, num_of_particles, bomb_height_metres)
+        return Parameters(particle_fall_settings, wind_settings, environment, num_of_particles, bomb_height_metres)
 
     def _create_agents(self, num_of_agents):
 
@@ -95,6 +98,7 @@ class Model():
         # Create each agent
         for i in range(num_of_agents):
             agents.append(agentframework.Agent(
+                self._parameters.particle_fall_settings,
                 self._parameters.wind_settings,
                 self._parameters.environment.bomb_position,
                 self._parameters.bomb_height_metres
@@ -105,7 +109,8 @@ class Model():
 
 class Parameters():
 
-    def __init__(self, wind_settings, environment, num_of_particles, bomb_height_metres):
+    def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, bomb_height_metres):
+        self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._environment = environment
         self._num_of_particles = num_of_particles
@@ -113,7 +118,10 @@ class Parameters():
 
     def __str__(self):
         return \
-"""Wind Settings
+"""Particle Fall Settings
+{}
+
+Wind Settings
 {}
 
 Environment
@@ -125,11 +133,33 @@ Number of particles
 Bomb height (m)
 {}
 """.format(
+    self.particle_fall_settings,
     self.wind_settings,
     self.environment,
     self.num_of_particles,
     self.bomb_height_metres
 )
+
+    @property
+    def particle_fall_settings(self):
+        """
+        Get the particle fall settings.
+        """
+        return self._particle_fall_settings
+
+    @particle_fall_settings.setter
+    def particle_fall_settings(self, value):
+        """
+        Set the particle fall settings.
+        """
+        self._particle_fall_settings = value
+
+    @particle_fall_settings.deleter
+    def particle_fall_settings(self):
+        """
+        Delete the particle fall settings property.
+        """
+        del self._particle_fall_settings
 
     @property
     def wind_settings(self):

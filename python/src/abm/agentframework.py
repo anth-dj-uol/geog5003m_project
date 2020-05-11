@@ -13,15 +13,22 @@ import csv
 from . import logger
 
 # Set default values
+
+DEFAULT_FALL_UP_PERCENTAGE = .2
+DEFAULT_FALL_DOWN_PERCENTAGE = .7
+DEFAULT_FALL_NO_CHANGE_PERCENTAGE = .1
+
 DEFAULT_WIND_NORTH_PERCENTAGE = .1
 DEFAULT_WIND_EAST_PERCENTAGE = .75
 DEFAULT_WIND_SOUTH_PERCENTAGE = .1
 DEFAULT_WIND_WEST_PERCENTAGE = .05
+
 DEFAULT_BOMB_POSITION_MARK = 255
 
 class Agent():
 
-    def __init__(self, wind_settings, start_position, start_height):
+    def __init__(self, particle_fall_settings, wind_settings, start_position, start_height):
+        self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._position = start_position
         self._height = start_height
@@ -31,6 +38,66 @@ class Agent():
 
     def can_move(self):
         return False
+
+class ParticleFallSettings():
+
+    def __init__(self, up_percentage=DEFAULT_FALL_UP_PERCENTAGE,
+        down_percentage=DEFAULT_FALL_DOWN_PERCENTAGE,
+        no_change_percentage=DEFAULT_FALL_NO_CHANGE_PERCENTAGE):
+        self._up_percentage = up_percentage
+        self._down_percentage = down_percentage
+        self._no_change_percentage = no_change_percentage
+
+    def __str__(self):
+        return """Chance of moving up: {}
+Chance of moving down: {}
+Chance of no vertical movement: {}""".format(
+    self._up_percentage,
+    self._down_percentage,
+    self._no_change_percentage
+)
+
+    @property
+    def up_percentage(self):
+        """
+        Get the chance of upward particle movement.
+        """
+        return self._up_percentage
+
+    @up_percentage.deleter
+    def up_percentage(self):
+        """
+        Delete the upward movement chance property.
+        """
+        del self._up_percentage
+
+    @property
+    def down_percentage(self):
+        """
+        Get the chance of downward particle movement.
+        """
+        return self._down_percentage
+
+    @down_percentage.deleter
+    def down_percentage(self):
+        """
+        Delete the downward movement chance property.
+        """
+        del self._down_percentage
+
+    @property
+    def no_change_percentage(self):
+        """
+        Get the chance of no vertical particle movement.
+        """
+        return self._no_change_percentage
+
+    @no_change_percentage.deleter
+    def no_change_percentage(self):
+        """
+        Delete the no change movement chance property.
+        """
+        del self._no_change_percentage
 
 
 class WindSettings():
