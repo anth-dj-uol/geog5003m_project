@@ -12,8 +12,15 @@ import tkinter
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot
+from matplotlib import cm
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 from . import logger
+
+
+# Set the plot color map
+COLOR_MAP = cm.get_cmap('magma', 255)
+COLOR_MAP.set_under(color='white')  
 
 class View():
 
@@ -161,7 +168,7 @@ class View():
         matplotlib.pyplot.ylim(0, environment.height)
         
         # Render the environment
-        matplotlib.pyplot.imshow(environment.plane)
+        matplotlib.pyplot.imshow(environment.plane, cmap=COLOR_MAP, vmin=0.0000001)
 
         # Render the bomb location
         matplotlib.pyplot.scatter(bomb_position.x, bomb_position.y, color='red')
