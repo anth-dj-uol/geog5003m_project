@@ -52,11 +52,19 @@ class Model():
         # Track whether the model can iterate
         can_iterate = True
 
+        # Run model iterations while at least one particle can move
         while can_iterate:
+
+            # Increment the iteration count
             iteration_count += 1
+
+            # Iterate the model
             can_iterate = self.iterate()
         
         logger.log("Done model simulation after iteration {}", iteration_count)
+
+        # Return the resulting particle density environment
+        return self._get_particle_density_environment()
 
     def iterate(self):
 
@@ -70,6 +78,25 @@ class Model():
                 can_iterate = True
 
         return can_iterate
+
+    def _get_particle_density_environment(self):
+
+        # Create a new environment using the size of the bomb environment
+        environment = agentframework.Environment.create_from_size(
+            self._parameters._environment.height,
+            self._parameters._environment.width
+        )
+        
+        # Increment the environment value at the position of each agent
+        for agent in self._agents:
+
+            # Check if the agent position is within the environment bounds
+            if environment.contains(agent.position):
+
+                # Increment the environment location value
+                environment.plane[agent.position.y][agent.position.x] += 1
+
+        return environment
 
     def _get_default_parameters(self):
 

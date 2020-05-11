@@ -32,19 +32,33 @@ class Agent():
     def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
-        self._position = start_position
+        self._position = Position.copy(start_position)
         self._building_height = building_height
         self._height = building_height
 
+    @property
+    def position(self):
+        """
+        Get the agent position.
+        """
+        return self._position
+
+    @position.deleter
+    def position(self):
+        """
+        Delete the agent position property.
+        """
+        del self._position
+
     def move(self):
         # Calculate the particle direction using the particle fall settings
-        direction = self._particle_fall_settings.get_next()
+        direction = self._wind_settings.get_next()
         if direction == Direction.NORTH:
             self._position.y = self._position.y + 1
         elif direction == Direction.EAST:
             self._position.x = self._position.x + 1
         elif direction == Direction.SOUTH:
-            self._position.y = self.position.y - 1
+            self._position.y = self._position.y - 1
         else:
             self._position.x = self._position.x - 1
 
@@ -298,6 +312,10 @@ class Position():
         """
         del self._y
 
+    @staticmethod
+    def copy(original):
+        return Position(original.x, original.y)
+
 
 class Environment():
 
@@ -328,15 +346,47 @@ class Environment():
         """
         del self._plane
 
+    @property
+    def width(self):
+        """
+        Get the plane width.
+        """
+        return self._width
+
+    @width.deleter
+    def width(self):
+        """
+        Delete the plane width property.
+        """
+        del self._width
+
+    @property
+    def height(self):
+        """
+        Get the plane height.
+        """
+        return self._height
+
+    @height.deleter
+    def height(self):
+        """
+        Delete the plane height property.
+        """
+        del self._height
+
+    def contains(self, position):
+
+        # Check if the agent position is within the environment bounds
+        return position.y < self.height and position.x < self.width
 
     @staticmethod
-    def create_from_size(rows, columns, initial_value=0):
+    def create_from_size(height, width, initial_value=0):
 
         plane = []
-        for i in range(rows):
+        for i in range(height):
 
             row = []
-            for j in range(columns):
+            for j in range(width):
                 row.append(initial_value)
             plane.append(row)
         return Environment(plane)

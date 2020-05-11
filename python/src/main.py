@@ -17,8 +17,8 @@ def main():
     initial_model = model.Model()
     logger.log("Created initial model:\n{}\n", initial_model)
 
-    # Run the model
-    initial_model.run()
+    # Run the model and get the resulting particle density environment
+    particle_density_environment = initial_model.run()
 
 
 # Run the main function when invoked as a script
