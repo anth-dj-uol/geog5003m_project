@@ -211,15 +211,15 @@ class Controller():
         # Update model parameters
         self.model.update_parameters(
             agentframework.ParticleFallSettings(
-                self._get_percentage_decimal(up_percentage),
-                self._get_percentage_decimal(down_percentage),
-                self._get_percentage_decimal(no_change_percentage)
+                up_percentage,
+                down_percentage,
+                no_change_percentage
             ),
             agentframework.WindSettings(
-                self._get_percentage_decimal(north_percentage),
-                self._get_percentage_decimal(east_percentage),
-                self._get_percentage_decimal(south_percentage),
-                self._get_percentage_decimal(west_percentage)
+                north_percentage,
+                east_percentage,
+                south_percentage,
+                west_percentage
             ),
             num_of_particles,
             building_height_metres,
@@ -244,9 +244,6 @@ class Controller():
         return percentage
 
 
-    def _get_percentage_decimal(self, percentage_integer):
-        return percentage_integer / 100
-
     def _update_parameters_view(self):
         """
         Update the parameter entry fields in the View from values in the Model.
@@ -261,13 +258,13 @@ class Controller():
         
         # Update wind direction entry field values
         self.view._set_entry_field_value(self.view.north_percentage_entry,
-                self._percent_to_int(self.model.parameters.wind_settings.north_percentage))
+                self.model.parameters.wind_settings.north_percentage)
         self.view._set_entry_field_value(self.view.east_percentage_entry,
-                self._percent_to_int(self.model.parameters.wind_settings.east_percentage))
+                self.model.parameters.wind_settings.east_percentage)
         self.view._set_entry_field_value(self.view.south_percentage_entry,
-                self._percent_to_int(self.model.parameters.wind_settings.south_percentage))
+                self.model.parameters.wind_settings.south_percentage)
         self.view._set_entry_field_value(self.view.west_percentage_entry,
-                self._percent_to_int(self.model.parameters.wind_settings.west_percentage))
+                self.model.parameters.wind_settings.west_percentage)
 
         # Update building height entry field value
         self.view._set_entry_field_value(self.view.max_num_of_iterations_entry,
@@ -275,11 +272,11 @@ class Controller():
 
         # Update particle fall entry field values
         self.view._set_entry_field_value(self.view.up_percentage_entry,
-                self._percent_to_int(self.model.parameters.particle_fall_settings.up_percentage))
+                self.model.parameters.particle_fall_settings.up_percentage)
         self.view._set_entry_field_value(self.view.down_percentage_entry,
-                self._percent_to_int(self.model.parameters.particle_fall_settings.down_percentage))
+                self.model.parameters.particle_fall_settings.down_percentage)
         self.view._set_entry_field_value(self.view.no_change_percentage_entry,
-                self._percent_to_int(self.model.parameters.particle_fall_settings.no_change_percentage))
+                self.model.parameters.particle_fall_settings.no_change_percentage)
 
         # Update number of particles entry field value
         self.view._set_entry_field_value(self.view.num_of_particles_entry,
@@ -288,10 +285,6 @@ class Controller():
         # Update building height entry field value
         self.view._set_entry_field_value(self.view.building_height_metres_entry,
                                    self.model.parameters.building_height_metres)
-
-
-    def _percent_to_int(self, value):
-        return int(value * 100)
 
 
 

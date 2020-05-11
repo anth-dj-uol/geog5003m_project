@@ -16,14 +16,14 @@ from . import logger
 
 # Set default values
 
-DEFAULT_FALL_UP_PERCENTAGE = .2
-DEFAULT_FALL_DOWN_PERCENTAGE = .7
-DEFAULT_FALL_NO_CHANGE_PERCENTAGE = .1
+DEFAULT_FALL_UP_PERCENTAGE = 20
+DEFAULT_FALL_DOWN_PERCENTAGE = 70
+DEFAULT_FALL_NO_CHANGE_PERCENTAGE = 10
 
-DEFAULT_WIND_NORTH_PERCENTAGE = .1
-DEFAULT_WIND_EAST_PERCENTAGE = .75
-DEFAULT_WIND_SOUTH_PERCENTAGE = .1
-DEFAULT_WIND_WEST_PERCENTAGE = .05
+DEFAULT_WIND_NORTH_PERCENTAGE = 10
+DEFAULT_WIND_EAST_PERCENTAGE = 75
+DEFAULT_WIND_SOUTH_PERCENTAGE = 10
+DEFAULT_WIND_WEST_PERCENTAGE = 5
 
 DEFAULT_BOMB_POSITION_MARK = 255
 
@@ -97,7 +97,7 @@ class ParticleFallSettings():
 
         # Validate percentage sum
         percentage_sum = up_percentage + down_percentage + no_change_percentage
-        if percentage_sum > 1:
+        if percentage_sum > 100:
             raise Exception("Particle fall percentages must add up to 100 (current value is {})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
@@ -118,7 +118,7 @@ Chance of no vertical movement: {}""".format(
 )
 
     def get_next(self):
-        value = random()
+        value = random() * 100
         if value <= self._up_threshold_mark:
             return Fall.UP
         elif value <= self._down_threshold_mark:
@@ -194,7 +194,7 @@ class WindSettings():
 
         # Validate percentage sum
         percentage_sum = north_percentage + east_percentage + south_percentage + west_percentage
-        if percentage_sum > 1:
+        if percentage_sum > 100:
             raise Exception("Wind direction percentages must add up to 100 (current value is{})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
@@ -219,7 +219,7 @@ Chance of west travel: {}""".format(
 )
 
     def get_next(self):
-        value = random()
+        value = random() * 100
         if value <= self._north_percentage_threshold:
             return Direction.NORTH
         elif value <= self._east_percentage_threshold:

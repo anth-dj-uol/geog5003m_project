@@ -75,7 +75,7 @@ class View():
             4, 0, 4, 1)
 
         self.up_percentage_entry = self._insert_labelled_entry(
-            parameters_frame, "Upward wind direction %",
+            parameters_frame, "Upward wind direction %:",
             "",
             0, 2, 0, 3)
 
