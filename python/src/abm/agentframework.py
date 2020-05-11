@@ -97,7 +97,7 @@ class ParticleFallSettings():
 
         # Validate percentage sum
         percentage_sum = up_percentage + down_percentage + no_change_percentage
-        if percentage_sum > 100:
+        if percentage_sum > 100 or percentage_sum < 100:
             raise Exception("Particle fall percentages must add up to 100 (current value is {})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
