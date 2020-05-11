@@ -8,8 +8,10 @@ A project for the University of Leeds GEOG5003M course.
 @author: Anthony Jarrett
 """
 
+import tkinter
 from abm import agentframework, model, view, logger
 
+DEFAULT_SAVE_FILE_EXTENSION = ".raster"
 
 class Controller():
 
@@ -38,6 +40,26 @@ class Controller():
         # Render view
         self.view.canvas.draw()
 
+    def save_model(self):
+
+        # Check that there exists a result to save
+        if self.model.result_environment is None:
+            self.view.show_error("The model must be run before saving the result.")
+        else:
+            # Ask user for the new file location
+            logger.log("Prompting user for file location.")
+            file = tkinter.filedialog.asksaveasfile(defaultextension=DEFAULT_SAVE_FILE_EXTENSION)
+            if file is not None:
+                logger.log("Writing result environment contents...")
+                self.save_environment_as_text(file, self.model.result_environment)
+                logger.log("Completed file write as text.")
+                self.view.show_info("File saved successfully.")
+
+    def save_environment_as_text(self, file, environment):
+        for row in environment.plane:
+            for column in row:
+                file.write(str(column) + " ")
+            file.write("\n")
 
     def reset_model(self):
         

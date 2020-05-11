@@ -48,6 +48,7 @@ class View():
         model_menu = tkinter.Menu(menubar)
         menubar.add_cascade(label="Model", menu=model_menu)
         model_menu.add_command(label="Run model", command=self._on_run_model)
+        model_menu.add_command(label="Save as text...", command=self._on_save_model)
         model_menu.add_command(label="Exit", command=self._on_exit)
         
         
@@ -134,7 +135,24 @@ class View():
 
         """
         
-        tkinter.messagebox.showinfo("Error", message)
+        tkinter.messagebox.showerror("Error", message)
+
+    def show_info(self, message):
+        """
+        Display info message
+
+        Parameters
+        ----------
+        message : str
+            Info message to be displayed.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        tkinter.messagebox.showinfo("Info", message)
 
 
     def _on_close(self):
@@ -151,6 +169,9 @@ class View():
 
     def _on_run_model(self):
         self.controller.run_model()
+
+    def _on_save_model(self):
+        self.controller.save_model()
 
     def _on_exit(self):
         self._on_close()

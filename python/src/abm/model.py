@@ -69,10 +69,28 @@ class Model():
         """
         del self._agents
 
+    @property
+    def result_environment(self):
+        """
+        Get the result environment.
+        """
+        return self._result_environment
+
+    @result_environment.deleter
+    def result_environment(self):
+        """
+        Delete the result environment property.
+        """
+        del self._result_environment
+
+
     def initialize(self):
 
         # Set the model agents
         self._agents = self._create_agents(self._parameters.num_of_particles)
+
+        # Clear the result environment
+        self._result_environment = None
 
 
     def run(self):
@@ -96,8 +114,9 @@ class Model():
         
         logger.log("Done model simulation after iteration {}", iteration_count)
 
-        # Return the resulting particle density environment
-        return self._get_particle_density_environment()
+        # Set and return the resulting particle density environment
+        self._result_environment = self._get_particle_density_environment()
+        return self._result_environment
 
     def iterate(self):
 
