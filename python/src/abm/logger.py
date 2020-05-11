@@ -10,5 +10,12 @@ Provides classes used for logging.
 
 from datetime import datetime
 
+_enabled = False
+
 def log(message, *args):
-    print("{} - {}".format(datetime.now().isoformat(), message.format(*args)))
+    if _enabled:
+        print("{} - {}".format(datetime.now().isoformat(), message.format(*args)))
+
+def configure(enabled=False):
+    global _enabled
+    _enabled = enabled

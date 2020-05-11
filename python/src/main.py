@@ -289,6 +289,7 @@ class Controller():
 
 
 def main():
+    logger.configure(True)
     logger.log("Starting Bacterial Bomb Agent-Based Model...")
 
     # Start the GUI program
