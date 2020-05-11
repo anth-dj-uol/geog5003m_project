@@ -28,8 +28,8 @@ class Model():
         # Set the model parameters
         self._parameters = parameters
 
-        # Set the model agents
-        self._agents = self._create_agents(self._parameters.num_of_particles)
+        # Initialize the model agents
+        self.initialize()
 
 
     def __str__(self):
@@ -40,6 +40,39 @@ class Model():
 
 {}
 =======================================""".format(self._parameters)
+
+    @property
+    def parameters(self):
+        """
+        Get the model parameters.
+        """
+        return self._parameters
+
+    @parameters.deleter
+    def parameters(self):
+        """
+        Delete the model parameters property.
+        """
+        del self._parameters
+
+    @property
+    def agents(self):
+        """
+        Get the model agents.
+        """
+        return self._agents
+
+    @agents.deleter
+    def agents(self):
+        """
+        Delete the model agents property.
+        """
+        del self._agents
+
+    def initialize(self):
+
+        # Set the model agents
+        self._agents = self._create_agents(self._parameters.num_of_particles)
 
 
     def run(self):
