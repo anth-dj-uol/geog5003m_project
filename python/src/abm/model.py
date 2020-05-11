@@ -13,6 +13,7 @@ import os
 from . import agentframework, logger
 
 DEFAULT_NUM_OF_PARTICLES = 5000
+DEFAULT_BOMB_HEIGHT_METRES = 75
 DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + \
     os.sep + '../wind.raster'
 
@@ -80,8 +81,11 @@ class Model():
         # Set default number of particles
         num_of_particles = DEFAULT_NUM_OF_PARTICLES
 
+        # Set default bomb height
+        bomb_height_metres = DEFAULT_BOMB_HEIGHT_METRES
+
         # Return parameters
-        return Parameters(wind_settings, environment, num_of_particles)
+        return Parameters(wind_settings, environment, num_of_particles, bomb_height_metres)
 
     def _create_agents(self, num_of_agents):
 
@@ -92,7 +96,8 @@ class Model():
         for i in range(num_of_agents):
             agents.append(agentframework.Agent(
                 self._parameters.wind_settings,
-                self._parameters._environment.bomb_position
+                self._parameters.environment.bomb_position,
+                self._parameters.bomb_height_metres
             ))
 
         return agents
@@ -100,11 +105,11 @@ class Model():
 
 class Parameters():
 
-    def __init__(self, wind_settings, environment,
-        num_of_particles=DEFAULT_NUM_OF_PARTICLES):
+    def __init__(self, wind_settings, environment, num_of_particles, bomb_height_metres):
         self._wind_settings = wind_settings
         self._environment = environment
         self._num_of_particles = num_of_particles
+        self._bomb_height_metres = bomb_height_metres
 
     def __str__(self):
         return \
@@ -116,10 +121,14 @@ Environment
 
 Number of particles
 {}
+
+Bomb height (m)
+{}
 """.format(
-    self._wind_settings,
-    self._environment,
-    self.num_of_particles
+    self.wind_settings,
+    self.environment,
+    self.num_of_particles,
+    self.bomb_height_metres
 )
 
     @property
@@ -185,4 +194,24 @@ Number of particles
         """
         del self._num_of_particles
 
+    @property
+    def bomb_height_metres(self):
+        """
+        Get the bomb height in metres.
+        """
+        return self._bomb_height_metres
+    
+    @bomb_height_metres.setter
+    def bomb_height_metres(self, value):
+        """
+        Set the bomb height in metres.
+        """
+        self._bomb_height_metres = value
+    
+    @bomb_height_metres.deleter
+    def bomb_height_metres(self):
+        """
+        Delete the bomb height property.
+        """
+        del self._bomb_height_metres
 

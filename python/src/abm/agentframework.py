@@ -21,9 +21,10 @@ DEFAULT_BOMB_POSITION_MARK = 255
 
 class Agent():
 
-    def __init__(self, wind_settings, start_position):
+    def __init__(self, wind_settings, start_position, start_height):
         self._wind_settings = wind_settings
         self._position = start_position
+        self._height = start_height
 
     def move(self):
         pass
