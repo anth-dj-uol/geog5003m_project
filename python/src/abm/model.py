@@ -56,7 +56,7 @@ class Model():
             iteration_count += 1
             can_iterate = self.iterate()
         
-        logger.log("Done model simulation at iteration {}", iteration_count)
+        logger.log("Done model simulation after iteration {}", iteration_count)
 
     def iterate(self):
 
@@ -65,6 +65,7 @@ class Model():
         # Move each agent in the model
         for agent in self._agents:
             agent.move()
+            agent.fall()
             if agent.can_move():
                 can_iterate = True
 

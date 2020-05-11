@@ -9,6 +9,8 @@ Provides classes used to represent agents and their data.
 """
 
 import csv
+from enum import Enum
+from random import random
 
 from . import logger
 
@@ -27,17 +29,46 @@ DEFAULT_BOMB_POSITION_MARK = 255
 
 class Agent():
 
-    def __init__(self, particle_fall_settings, wind_settings, start_position, start_height):
+    def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._position = start_position
-        self._height = start_height
+        self._building_height = building_height
+        self._height = building_height
 
     def move(self):
-        pass
+        # Calculate the particle direction using the particle fall settings
+        direction = self._particle_fall_settings.get_next()
+        if direction == Direction.NORTH:
+            self._position.y = self._position.y + 1
+        elif direction == Direction.EAST:
+            self._position.x = self._position.x + 1
+        elif direction == Direction.SOUTH:
+            self._position.y = self.position.y - 1
+        else:
+            self._position.x = self._position.x - 1
+
+    def fall(self):
+
+        # If below the building height, particle always falls
+        if self._height < self._building_height:
+            self._height -= 1
+
+        else:
+            # Calculate the fall using the particle fall settings
+            fall = self._particle_fall_settings.get_next()
+            if fall == Fall.UP:
+                self._height += 1
+            elif fall == Fall.DOWN:
+                self._height -= 1
 
     def can_move(self):
-        return False
+        return self._height > 0
+
+class Fall(Enum):
+    UP = 1
+    DOWN = 2
+    NONE = 3
 
 class ParticleFallSettings():
 
@@ -48,6 +79,11 @@ class ParticleFallSettings():
         self._down_percentage = down_percentage
         self._no_change_percentage = no_change_percentage
 
+        # Precalculate thresholds to improve performance
+        self._up_threshold_mark = self._up_percentage
+        self._down_threshold_mark = self._up_threshold_mark + self._down_percentage
+
+
     def __str__(self):
         return """Chance of moving up: {}
 Chance of moving down: {}
@@ -56,6 +92,15 @@ Chance of no vertical movement: {}""".format(
     self._down_percentage,
     self._no_change_percentage
 )
+
+    def get_next(self):
+        value = random()
+        if value <= self._up_threshold_mark:
+            return Fall.UP
+        elif value <= self._down_threshold_mark:
+            return Fall.DOWN
+        return Fall.NONE
+
 
     @property
     def up_percentage(self):
@@ -100,6 +145,13 @@ Chance of no vertical movement: {}""".format(
         del self._no_change_percentage
 
 
+class Direction(Enum):
+    NORTH = 1
+    EAST = 2
+    SOUTH = 3
+    WEST = 4
+
+
 class WindSettings():
 
     def __init__(self, north_percentage=DEFAULT_WIND_NORTH_PERCENTAGE,
@@ -111,6 +163,12 @@ class WindSettings():
         self._south_percentage = south_percentage
         self._west_percentage = west_percentage
 
+        # Precalculate thresholds to improve performance
+        self._north_percentage_threshold = self._north_percentage
+        self._east_percentage_threshold = self._north_percentage_threshold + self._east_percentage
+        self._south_percentage_threshold = self._east_percentage_threshold + self._south_percentage
+
+
     def __str__(self):
         return """Chance of north travel: {}
 Chance of east travel: {}
@@ -121,6 +179,16 @@ Chance of west travel: {}""".format(
     self._south_percentage,
     self._west_percentage
 )
+
+    def get_next(self):
+        value = random()
+        if value <= self._north_percentage_threshold:
+            return Direction.NORTH
+        elif value <= self._east_percentage_threshold:
+            return Direction.EAST
+        elif value <= self._south_percentage_threshold:
+            return Direction.SOUTH
+        return Direction.WEST
 
     @property
     def north_percentage(self):
@@ -195,6 +263,13 @@ class Position():
         """
         return self._x
 
+    @x.setter
+    def x(self, value):
+        """
+        Set the x-axis position.
+        """
+        self._x = value
+
     @x.deleter
     def x(self):
         """
@@ -208,6 +283,13 @@ class Position():
         Get the y-axis position.
         """
         return self._y
+
+    @y.setter
+    def y(self, value):
+        """
+        Set the y-axis position.
+        """
+        self._y = value
 
     @y.deleter
     def y(self):
