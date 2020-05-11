@@ -98,7 +98,7 @@ class ParticleFallSettings():
         # Validate percentage sum
         percentage_sum = up_percentage + down_percentage + no_change_percentage
         if percentage_sum > 1:
-            raise Exception("Particle fall percentages must add up to 100 (current value is{})".format(percentage_sum))
+            raise Exception("Particle fall percentages must add up to 100 (current value is {})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
         self._up_threshold_mark = self._up_percentage
@@ -167,6 +167,11 @@ Chance of no vertical movement: {}""".format(
         Delete the no change movement chance property.
         """
         del self._no_change_percentage
+
+    def equals(self, other):
+        return  self.down_percentage == other.down_percentage and \
+                self.up_percentage == other.up_percentage and \
+                self.no_change_percentage == other.no_change_percentage
 
 
 class Direction(Enum):
@@ -279,6 +284,13 @@ Chance of west travel: {}""".format(
         """
         del self._west_percentage
 
+    def equals(self, other):
+        return  self.north_percentage == other.north_percentage and \
+                self.east_percentage == other.east_percentage and \
+                self.south_percentage == other.south_percentage and \
+                self.west_percentage == other.west_percentage
+
+
 
 class Position():
 
@@ -330,6 +342,9 @@ class Position():
         Delete the y-axis position.
         """
         del self._y
+
+    def equals(self, other):
+        return self.x == other.x and self.y == other.y
 
     @staticmethod
     def create_from(original):
