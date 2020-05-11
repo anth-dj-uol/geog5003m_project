@@ -97,36 +97,16 @@ class Model():
 
         logger.log("Starting model simulation...")
 
-        # Track the iteration count
-        iteration_count = 0
+        # Track the maximum iteration count
+        max_iteration_count = 0
 
-        # Track whether the model can iterate
-        can_iterate = True
-
-        # Run model iterations while at least one particle can move
-        while can_iterate:
-
-            # Increment the iteration count
-            iteration_count += 1
-
-            # Iterate the model
-            can_iterate = self.iterate()
-        
-        logger.log("Done model simulation after iteration {}", iteration_count)
-
-        # Set and return the resulting particle density environment
-        self._result_environment = self._get_particle_density_environment()
-        return self._result_environment
-
-    def iterate(self):
-
-        can_iterate = False
-
-        # Move each agent in the model
         for agent in self._agents:
 
-            # Check that the particle can still fall
-            if agent.can_fall():
+            # Track the iteration count
+            iteration_count = 0
+
+            # Run model iterations while at least one particle can move
+            while agent.can_fall():
 
                 # Move the particle according to the wind settings
                 agent.move()
@@ -134,10 +114,18 @@ class Model():
                 # Drop the particle according to the particle fall settings
                 agent.fall()
 
-                # Note that the particle can still fall
-                can_iterate = True
+                # Increment the iteration count
+                iteration_count += 1
 
-        return can_iterate
+            # Update the maximum iteration count
+            if iteration_count > max_iteration_count:
+                max_iteration_count = iteration_count
+
+        logger.log("Done simulation. Last particle reached the ground at {} seconds", max_iteration_count)
+
+        # Set and return the resulting particle density environment
+        self._result_environment = self._get_particle_density_environment()
+        return self._result_environment
 
 
     def update_parameters(self, particle_fall_settings, wind_settings, num_of_particles, building_height_metres):
