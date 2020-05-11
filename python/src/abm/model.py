@@ -112,6 +112,13 @@ class Model():
 
         return can_iterate
 
+
+    def update_parameters(self, particle_fall_settings, wind_settings, num_of_particles):
+        self.parameters.particle_fall_settings = particle_fall_settings
+        self.parameters.wind_settings = wind_settings
+        self.parameters.num_of_particles = num_of_particles
+
+
     def _get_particle_density_environment(self):
 
         # Create a new environment using the size of the bomb environment

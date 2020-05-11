@@ -101,6 +101,24 @@ class View():
         self.canvas = canvas
 
 
+    def show_error(self, message):
+        """
+        Display error message
+
+        Parameters
+        ----------
+        message : str
+            Error message to be displayed.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        tkinter.messagebox.showinfo("Error", message)
+
+
     def _on_close(self):
         
         logger.log("Shutting down program.")

@@ -93,6 +93,11 @@ class ParticleFallSettings():
         self._down_percentage = down_percentage
         self._no_change_percentage = no_change_percentage
 
+        # Validate percentage sum
+        percentage_sum = up_percentage + down_percentage + no_change_percentage
+        if percentage_sum > 1:
+            raise Exception("Particle fall percentages must add up to 100 (current value is{})".format(percentage_sum))
+
         # Precalculate thresholds to improve performance
         self._up_threshold_mark = self._up_percentage
         self._down_threshold_mark = self._up_threshold_mark + self._down_percentage
@@ -176,6 +181,11 @@ class WindSettings():
         self._east_percentage = east_percentage
         self._south_percentage = south_percentage
         self._west_percentage = west_percentage
+
+        # Validate percentage sum
+        percentage_sum = north_percentage + east_percentage + south_percentage + west_percentage
+        if percentage_sum > 1:
+            raise Exception("Wind direction percentages must add up to 100 (current value is{})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
         self._north_percentage_threshold = self._north_percentage
