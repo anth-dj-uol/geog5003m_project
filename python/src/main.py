@@ -147,6 +147,17 @@ class Controller():
             "West wind direction %"
         )
 
+        # Validate and get maximum number of iterations
+        max_num_of_iterations = None
+        max_num_of_iterations_text = self.view.max_num_of_iterations_entry.get()
+        try:
+            max_num_of_iterations = int(max_num_of_iterations_text)
+        except:
+            raise Exception("Max number of iterations must be an integer")
+        
+        if max_num_of_iterations < 0:
+            raise Exception("Max number of iterations must be greater than 0")
+
         # Validate and get particle fall up percentage
         up_percentage = self._get_percentage_integer(
             self.view.up_percentage_entry.get(),
@@ -165,7 +176,7 @@ class Controller():
             "No height change %"
         )
 
-        # Validate and get number of iterations
+        # Validate and get number of particles
         num_of_particles = None
         num_of_particles_text = self.view.num_of_particles_entry.get()
         try:
@@ -211,7 +222,8 @@ class Controller():
                 self._get_percentage_decimal(west_percentage)
             ),
             num_of_particles,
-            building_height_metres
+            building_height_metres,
+            max_num_of_iterations
         )
 
         # Update view parameters
@@ -256,7 +268,11 @@ class Controller():
                 self._percent_to_int(self.model.parameters.wind_settings.south_percentage))
         self.view._set_entry_field_value(self.view.west_percentage_entry,
                 self._percent_to_int(self.model.parameters.wind_settings.west_percentage))
-        
+
+        # Update building height entry field value
+        self.view._set_entry_field_value(self.view.max_num_of_iterations_entry,
+                                   self.model.parameters.max_num_of_iterations)
+
         # Update particle fall entry field values
         self.view._set_entry_field_value(self.view.up_percentage_entry,
                 self._percent_to_int(self.model.parameters.particle_fall_settings.up_percentage))

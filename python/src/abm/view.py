@@ -70,6 +70,10 @@ class View():
             parameters_frame, "West wind direction %:", "",
             3, 0, 3, 1)
 
+        self.max_num_of_iterations_entry = self._insert_labelled_entry(
+            parameters_frame, "Maximum iterations:", "",
+            4, 0, 4, 1)
+
         self.up_percentage_entry = self._insert_labelled_entry(
             parameters_frame, "Upward wind direction %",
             "",

@@ -14,6 +14,7 @@ from . import agentframework, logger
 
 DEFAULT_NUM_OF_PARTICLES = 5000
 DEFAULT_BUILDING_HEIGHT_METRES = 75
+DEFAULT_MAX_NUM_OF_ITERATIONS = 1000
 DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + \
     os.sep + '../wind.raster'
 
@@ -100,6 +101,9 @@ class Model():
         # Track the maximum iteration count
         max_iteration_count = 0
 
+        # Track the number of particles that did not land in time
+        num_particles_still_in_air = 0
+
         for agent in self._agents:
 
             # Track the iteration count
@@ -116,10 +120,17 @@ class Model():
 
                 # Increment the iteration count
                 iteration_count += 1
+            
+                # Abort if the maximum number of iterations has been reached
+                if iteration_count >= self.parameters.max_num_of_iterations:
+                    num_particles_still_in_air += 1
+                    break
 
             # Update the maximum iteration count
             if iteration_count > max_iteration_count:
                 max_iteration_count = iteration_count
+
+        logger.log("{} particles did no reach the ground in time", num_particles_still_in_air)
 
         logger.log("Done simulation. Last particle reached the ground at {} seconds", max_iteration_count)
 
@@ -128,11 +139,19 @@ class Model():
         return self._result_environment
 
 
-    def update_parameters(self, particle_fall_settings, wind_settings, num_of_particles, building_height_metres):
+    def update_parameters(
+        self,
+        particle_fall_settings,
+        wind_settings,
+        num_of_particles,
+        building_height_metres,
+        max_num_of_iterations
+    ):
         self.parameters.particle_fall_settings = particle_fall_settings
         self.parameters.wind_settings = wind_settings
         self.parameters.num_of_particles = num_of_particles
         self.parameters.building_height_metres = building_height_metres
+        self.parameters.max_num_of_iterations = max_num_of_iterations
 
 
     def _get_particle_density_environment(self):
@@ -156,23 +175,15 @@ class Model():
 
     def _get_default_parameters(self):
 
-        # Create default particle fall settings
-        particle_fall_settings = agentframework.ParticleFallSettings()
-
-        # Create default wind settings
-        wind_settings = agentframework.WindSettings()
-
-        # Load bomb environment
-        environment = agentframework.BombEnvironment.create_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH)
-
-        # Set default number of particles
-        num_of_particles = DEFAULT_NUM_OF_PARTICLES
-
-        # Set default bomb height
-        building_height_metres = DEFAULT_BUILDING_HEIGHT_METRES
-
-        # Return parameters
-        return Parameters(particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres)
+        # Return default parameters
+        return Parameters(
+            agentframework.ParticleFallSettings(),
+            agentframework.WindSettings(),
+            agentframework.BombEnvironment.create_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH),
+            DEFAULT_NUM_OF_PARTICLES,
+            DEFAULT_BUILDING_HEIGHT_METRES,
+            DEFAULT_MAX_NUM_OF_ITERATIONS
+        )
 
     def _create_agents(self, num_of_agents):
 
@@ -193,12 +204,13 @@ class Model():
 
 class Parameters():
 
-    def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres):
+    def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres, max_num_of_iterations):
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._environment = environment
         self._num_of_particles = num_of_particles
         self._building_height_metres = building_height_metres
+        self._max_num_of_iterations = max_num_of_iterations
 
     def __str__(self):
         return \
@@ -216,12 +228,15 @@ Number of particles
 
 Building height (m)
 {}
+
+Maximum number of iterations: {}
 """.format(
     self.particle_fall_settings,
     self.wind_settings,
     self.environment,
     self.num_of_particles,
-    self.building_height_metres
+    self.building_height_metres,
+    self.max_num_of_iterations
 )
 
     @property
@@ -328,4 +343,25 @@ Building height (m)
         Delete the building height property.
         """
         del self._building_height_metres
+
+    @property
+    def max_num_of_iterations(self):
+        """
+        Get the maximum number of iterations.
+        """
+        return self._max_num_of_iterations
+    
+    @max_num_of_iterations.setter
+    def max_num_of_iterations(self, value):
+        """
+        Set the maximum number of iterations.
+        """
+        self._max_num_of_iterations = value
+    
+    @max_num_of_iterations.deleter
+    def max_num_of_iterations(self):
+        """
+        Delete the maximum number of iterations property.
+        """
+        del self._max_num_of_iterations
 
