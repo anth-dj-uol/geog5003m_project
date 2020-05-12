@@ -3,19 +3,26 @@
 """
 Logging module
 
-Provides classes used for logging.
+Provides utility functions for logging text output.
 
 @author: Anthony Jarrett
 """
 
 from datetime import datetime
 
-_enabled = False
+
+_enabled = False    # Track the logging enabled flag
 
 def log(message, *args):
+
+    # Check if logging is enabled
     if _enabled:
+
+        # Print the log message with any provided format arguments
         print("{} - {}".format(datetime.now().isoformat(), message.format(*args)))
 
 def configure(enabled=False):
+
+    # Set the logging enabled flag
     global _enabled
     _enabled = enabled

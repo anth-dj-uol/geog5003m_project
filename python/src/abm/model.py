@@ -12,6 +12,8 @@ import os
 
 from . import agentframework, logger
 
+
+# Initialize default values
 DEFAULT_NUM_OF_PARTICLES = 5000
 DEFAULT_BUILDING_HEIGHT_METRES = 75
 DEFAULT_MAX_NUM_OF_ITERATIONS = 1000
@@ -21,6 +23,8 @@ DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + 
 class Model():
 
     def __init__(self, parameters=None):
+
+        logger.log("Instantiating a Model.")
 
         # If parameters are not provided, use default values
         if parameters is None:
@@ -131,7 +135,6 @@ class Model():
                 max_iteration_count = iteration_count
 
         logger.log("{} particles did no reach the ground in time", num_particles_still_in_air)
-
         logger.log("Done simulation. Last particle reached the ground at {} seconds", max_iteration_count)
 
         # Set and return the resulting particle density environment
@@ -147,6 +150,8 @@ class Model():
         building_height_metres,
         max_num_of_iterations
     ):
+
+        # Update the model parameter values
         self.parameters.particle_fall_settings = particle_fall_settings
         self.parameters.wind_settings = wind_settings
         self.parameters.num_of_particles = num_of_particles
@@ -199,12 +204,15 @@ class Model():
                 self._parameters.building_height_metres
             ))
 
+        # Return the resulting list of agents
         return agents
 
 
 class Parameters():
 
     def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres, max_num_of_iterations):
+
+        # Initialize the parameters properties
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._environment = environment

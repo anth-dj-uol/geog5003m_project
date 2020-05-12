@@ -20,7 +20,10 @@ from . import logger
 
 # Set the plot color map
 COLOR_MAP = cm.get_cmap('viridis', 255)
-COLOR_MAP.set_under(color='grey')  
+
+# Use a grey base color to easily distinguish small amounts of particles
+COLOR_MAP.set_under(color='grey')
+
 
 class View():
 
@@ -269,5 +272,8 @@ class View():
 
         """
         
+        # Delete the current entry field value
         entry_field.delete(0, tkinter.END)
+
+        # Set the new entry field value
         entry_field.insert(0, value)

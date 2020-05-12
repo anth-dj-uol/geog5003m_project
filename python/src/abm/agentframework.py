@@ -30,6 +30,8 @@ DEFAULT_BOMB_POSITION_MARK = 255
 class Agent():
 
     def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
+
+        # Set agent properties
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._position = Position.create_from(start_position)
@@ -51,8 +53,11 @@ class Agent():
         del self._position
 
     def move(self):
-        # Calculate the particle direction using the particle fall settings
+
+        # Get a new wind direction
         direction = self._wind_settings.get_next()
+
+        # Move the particle in the obtained direction
         if direction == Direction.NORTH:
             self._position.y += 1
         elif direction == Direction.EAST:
@@ -64,6 +69,7 @@ class Agent():
 
     def fall(self):
 
+        # Check if the particle can fall any further
         if self.can_fall():
 
             # If below the building height, particle always falls
@@ -71,8 +77,10 @@ class Agent():
                 self._height -= 1
 
             else:
-                # Calculate the fall using the particle fall settings
+                # Get a new fall direction
                 fall = self._particle_fall_settings.get_next()
+
+                # Change the particle height according to the fall direction
                 if fall == Fall.UP:
                     self._height += 1
                 elif fall == Fall.DOWN:
@@ -91,6 +99,8 @@ class ParticleFallSettings():
     def __init__(self, up_percentage=DEFAULT_FALL_UP_PERCENTAGE,
         down_percentage=DEFAULT_FALL_DOWN_PERCENTAGE,
         no_change_percentage=DEFAULT_FALL_NO_CHANGE_PERCENTAGE):
+
+        # Set particle fall settings properties
         self._up_percentage = up_percentage
         self._down_percentage = down_percentage
         self._no_change_percentage = no_change_percentage
@@ -118,7 +128,11 @@ Chance of no vertical movement: {}""".format(
 )
 
     def get_next(self):
+
+        # Generate a random number from 0 - 100
         value = random() * 100
+
+        # Return the fall direction according to the stored thresholds
         if value <= self._up_threshold_mark:
             return Fall.UP
         elif value <= self._down_threshold_mark:
@@ -187,6 +201,8 @@ class WindSettings():
         east_percentage=DEFAULT_WIND_EAST_PERCENTAGE,
         south_percentage=DEFAULT_WIND_SOUTH_PERCENTAGE,
         west_percentage=DEFAULT_WIND_WEST_PERCENTAGE):
+
+        # Set the wind settings properties
         self._north_percentage = north_percentage
         self._east_percentage = east_percentage
         self._south_percentage = south_percentage
@@ -219,7 +235,11 @@ Chance of west travel: {}""".format(
 )
 
     def get_next(self):
+
+        # Generate a random number from 0-100
         value = random() * 100
+
+        # Return the wind direction according to the stored thresholds
         if value <= self._north_percentage_threshold:
             return Direction.NORTH
         elif value <= self._east_percentage_threshold:
@@ -285,6 +305,8 @@ Chance of west travel: {}""".format(
         del self._west_percentage
 
     def equals(self, other):
+
+        # Check if all properties are equal
         return  self.north_percentage == other.north_percentage and \
                 self.east_percentage == other.east_percentage and \
                 self.south_percentage == other.south_percentage and \
@@ -295,6 +317,8 @@ Chance of west travel: {}""".format(
 class Position():
 
     def __init__(self, x, y):
+
+        # Set the position properties
         self._x = x
         self._y = y
 
@@ -344,10 +368,14 @@ class Position():
         del self._y
 
     def equals(self, other):
+
+        # Check if all properties are equal
         return self.x == other.x and self.y == other.y
 
     @staticmethod
     def create_from(original):
+
+        # Return a copy of the provided position
         return Position(original.x, original.y)
 
 
@@ -371,7 +399,6 @@ class Environment():
             self._width,
             self._height
         )
-
 
     @property
     def plane(self):
@@ -444,6 +471,8 @@ class BombEnvironment(Environment):
 
     def __init__(self, plane, bomb_position):
         super().__init__(plane)
+
+        # Set the bomb position property
         self._bomb_position = bomb_position
 
     def __str__(self):

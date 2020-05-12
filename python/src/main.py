@@ -17,6 +17,8 @@ class Controller():
 
     def __init__(self, model, view_class):
 
+        logger.log("Instantiating a Controller.")
+
         # Initialize model properties
         self.model = model              # Store a reference to the model
         self.view = view_class(self)    # Initialize the View
@@ -50,15 +52,27 @@ class Controller():
             logger.log("Prompting user for file location.")
             file = tkinter.filedialog.asksaveasfile(defaultextension=DEFAULT_SAVE_FILE_EXTENSION)
             if file is not None:
+
+                # Write the environment as text
                 logger.log("Writing result environment contents...")
                 self.save_environment_as_text(file, self.model.result_environment)
                 logger.log("Completed file write as text.")
+
+                # Display a success message
                 self.view.show_info("File saved successfully.")
 
     def save_environment_as_text(self, file, environment):
+
+        # Iterate through each row in the environment
         for row in environment.plane:
+
+            # Iterate through each cell in the environment
             for column in row:
+
+                # Write out the cell value
                 file.write(str(column) + " ")
+            
+            # Complete the row
             file.write("\n")
 
     def reset_model(self):
@@ -155,6 +169,7 @@ class Controller():
         except:
             raise Exception("Max number of iterations must be an integer")
         
+        # Ensure that the value is greater than or equal to 0
         if max_num_of_iterations < 0:
             raise Exception("Max number of iterations must be greater than 0")
 
@@ -183,7 +198,8 @@ class Controller():
             num_of_particles = int(num_of_particles_text)
         except:
             raise Exception("Number of particles must be an integer")
-        
+
+        # Ensure that the value is greater than or equal to 0
         if num_of_particles < 0:
             raise Exception("Number of particles must be greater than 0")
 
@@ -194,8 +210,9 @@ class Controller():
             building_height_metres = int(building_height_metres_text)
         except:
             raise Exception("Building height must be an integer")
-        
-        if num_of_particles < 0:
+
+        # Ensure that the value is greater than or equal to 0
+        if building_height_metres < 0:
             raise Exception("Building height must be greater than 0")
 
         # Validate particle fall percentage sum
@@ -231,16 +248,23 @@ class Controller():
 
 
     def _get_percentage_integer(self, percentage_text, entry_field_description):
+
+        # Set the default percentage value as None to indicate no change
         percentage = None
+
+        # Check if the percentage text contains a value
         if len(percentage_text) > 0:
             try:
+                # Attempt to parse an integer from the text value
                percentage = int(percentage_text)
             except:
                 raise Exception("{} must be an integer between 0-100".format(entry_field_description))
         
+        # Ensure that the percentage value is between 0 and 100
         if percentage < 0 or percentage > 100:
             raise Exception("{} must be between 0-100".format(entry_field_description))
 
+        # Return the percentage integer value
         return percentage
 
 
