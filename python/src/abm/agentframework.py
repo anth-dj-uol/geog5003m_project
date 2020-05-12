@@ -14,22 +14,58 @@ from random import random
 
 from . import logger
 
-# Set default values
 
+# Set default values
 DEFAULT_FALL_UP_PERCENTAGE = 20
 DEFAULT_FALL_DOWN_PERCENTAGE = 70
 DEFAULT_FALL_NO_CHANGE_PERCENTAGE = 10
-
 DEFAULT_WIND_NORTH_PERCENTAGE = 10
 DEFAULT_WIND_EAST_PERCENTAGE = 75
 DEFAULT_WIND_SOUTH_PERCENTAGE = 10
 DEFAULT_WIND_WEST_PERCENTAGE = 5
-
 DEFAULT_BOMB_POSITION_MARK = 255
 
+
 class Agent():
+    """
+    An implementation of a bacterial bomb partical agent.
+    
+    The Agent can move and fall according to the configured wind and particle
+    fall settings. The particle will start its fall from its configured
+    start position and building height.
+    
+    Public Methods:
+        
+        move -  moves the Agent one metre North, East, South or West using the
+                configured wind settings probabilities.
+        
+        fall -  causes a particle to fall upward, downward or to have no
+                vertical movement using the configured particle fall settings
+                probabilities.
+
+        can_fall - returns True if the particle has not yet hit the ground
+    """
 
     def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
+        """
+        Create an Agent instance.
+
+        Parameters
+        ----------
+        particle_fall_settings : agentframework.ParticleFallSettings
+            The particle fall settings for the agent.
+        wind_settings : agentframework.WindSettings
+            The wind settings for the agent.
+        start_position : agentframework.Position
+            The start position for the agent.
+        building_height : int
+            The start height of the agent.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Set agent properties
         self._particle_fall_settings = particle_fall_settings
@@ -53,6 +89,17 @@ class Agent():
         del self._position
 
     def move(self):
+        """
+        Move the agent along the environment plane.
+        
+        This method will move the agent North, East, South or West according
+        to the configured wind settings probabilities.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Get a new wind direction
         direction = self._wind_settings.get_next()
@@ -68,6 +115,17 @@ class Agent():
             self._position.x -= 1
 
     def fall(self):
+        """
+        Move the agent along the altitude plane.
+        
+        This method will move the agent up, down or not move at all according
+        to the configured particle fall settings probabilities.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Check if the particle can fall any further
         if self.can_fall():
@@ -87,18 +145,70 @@ class Agent():
                     self._height -= 1
 
     def can_fall(self):
+        """
+        Return if the particle has not yet hit the ground.
+
+        Returns
+        -------
+        bool
+            True if the particle has not yet hit the ground, otherwise False.
+
+        """
         return self._height > 0
 
+
 class Fall(Enum):
+    """
+    An enum representing possiblt fall directions.
+    """
     UP = 1
     DOWN = 2
     NONE = 3
 
+
+
 class ParticleFallSettings():
+    """
+    A collection of probability percentage values for particle fall direction.
+    
+    Public Methods:
+        
+        get_next -  returns the next fall direction using the
+                    configured direction probabilities.
+                    
+        equals -    returns whether one instance equals another
+    """
 
     def __init__(self, up_percentage=DEFAULT_FALL_UP_PERCENTAGE,
         down_percentage=DEFAULT_FALL_DOWN_PERCENTAGE,
         no_change_percentage=DEFAULT_FALL_NO_CHANGE_PERCENTAGE):
+        """
+        Create a particle fall settings instance.
+
+        Parameters
+        ----------
+        up_percentage : int, optional
+            The percentage probability that the particle will fall upwards.
+            The default is agentframework.DEFAULT_FALL_UP_PERCENTAGE.
+        down_percentage : int, optional
+            The percentage probability that the particle will fall downwards.
+            The default is agentframework.DEFAULT_FALL_DOWN_PERCENTAGE.
+        no_change_percentage : int, optional
+            The percentage probability that the particle will not change
+            its vertical height. The default is
+            agentframework.DEFAULT_FALL_NO_CHANGE_PERCENTAGE.
+
+        Raises
+        ------
+        Exception
+            An exception is raised when the given percentage values do not
+            add up to 100.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Set particle fall settings properties
         self._up_percentage = up_percentage
@@ -107,7 +217,7 @@ class ParticleFallSettings():
 
         # Validate percentage sum
         percentage_sum = up_percentage + down_percentage + no_change_percentage
-        if percentage_sum > 100 or percentage_sum < 100:
+        if percentage_sum != 100:
             raise Exception("Particle fall percentages must add up to 100 (current value is {})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
@@ -119,6 +229,14 @@ class ParticleFallSettings():
 
 
     def __str__(self):
+        """
+        Return a string representation of the object.
+
+        Returns
+        -------
+        None.
+
+        """
         return """Chance of moving up: {}
 Chance of moving down: {}
 Chance of no vertical movement: {}""".format(
@@ -128,6 +246,15 @@ Chance of no vertical movement: {}""".format(
 )
 
     def get_next(self):
+        """
+        Get the next fall direction using the configured probabilities.
+
+        Returns
+        -------
+        agentframework.Fall
+            The next fall direction.
+
+        """
 
         # Generate a random number from 0 - 100
         value = random() * 100
@@ -183,12 +310,30 @@ Chance of no vertical movement: {}""".format(
         del self._no_change_percentage
 
     def equals(self, other):
+        """
+        Check if the current settings are equal to the specified settings.
+
+        Parameters
+        ----------
+        other : agentframework.ParticleFallSettings
+            The object to compare.
+
+        Returns
+        -------
+        bool
+            Returns True if euqal probabilities, otherwise returns false.
+
+        """
+
         return  self.down_percentage == other.down_percentage and \
                 self.up_percentage == other.up_percentage and \
                 self.no_change_percentage == other.no_change_percentage
 
 
 class Direction(Enum):
+    """
+    An enum representing the possible particle movement directions.
+    """
     NORTH = 1
     EAST = 2
     SOUTH = 3
@@ -196,11 +341,51 @@ class Direction(Enum):
 
 
 class WindSettings():
+    """
+    A collection of probability percentage values for particle movement
+    direction along the environment plane.
+    
+    Public Methods:
+        
+        get_next -  returns the next movement direction using the
+                    configured direction probabilities.
+            
+        equals -    returns whether one instance equals another
+    """
 
     def __init__(self, north_percentage=DEFAULT_WIND_NORTH_PERCENTAGE,
         east_percentage=DEFAULT_WIND_EAST_PERCENTAGE,
         south_percentage=DEFAULT_WIND_SOUTH_PERCENTAGE,
         west_percentage=DEFAULT_WIND_WEST_PERCENTAGE):
+        """
+        Create a wind settings instance.
+
+        Parameters
+        ----------
+        north_percentage : int, optional
+            The percentage probability that the particle will move North.
+            The default is agentframework.DEFAULT_WIND_NORTH_PERCENTAGE.
+        east_percentage : int, optional
+            The percentage probability that the particle will move East.
+            The default is agentframework.DEFAULT_WIND_EAST_PERCENTAGE.
+        south_percentage : int, optional
+            The percentage probability that the particle will move South.
+            The default is agentframework.DEFAULT_WIND_SOUTH_PERCENTAGE.
+        west_percentage : int, optional
+            The percentage probability that the particle will move West.
+            The default is agentframework.DEFAULT_WIND_WEST_PERCENTAGE.
+
+        Raises
+        ------
+        Exception
+            An exception is raised when the given percentage values do not
+            add up to 100.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Set the wind settings properties
         self._north_percentage = north_percentage
@@ -210,7 +395,7 @@ class WindSettings():
 
         # Validate percentage sum
         percentage_sum = north_percentage + east_percentage + south_percentage + west_percentage
-        if percentage_sum > 100:
+        if percentage_sum != 100:
             raise Exception("Wind direction percentages must add up to 100 (current value is{})".format(percentage_sum))
 
         # Precalculate thresholds to improve performance
@@ -224,6 +409,15 @@ class WindSettings():
 
 
     def __str__(self):
+        """
+        Get a string representation of the wind settings.
+
+        Returns
+        -------
+        None.
+
+        """
+
         return """Chance of north travel: {}
 Chance of east travel: {}
 Chance of south travel: {}
@@ -235,6 +429,15 @@ Chance of west travel: {}""".format(
 )
 
     def get_next(self):
+        """
+        Get the next movement direction using the configured probabilities.
+
+        Returns
+        -------
+        agentframework.Direction
+            The next movement direction.
+
+        """
 
         # Generate a random number from 0-100
         value = random() * 100
@@ -305,6 +508,20 @@ Chance of west travel: {}""".format(
         del self._west_percentage
 
     def equals(self, other):
+        """
+        Check if the current settings are equal to the specified settings.
+
+        Parameters
+        ----------
+        other : agentframework.WindSettings
+            The object to compare.
+
+        Returns
+        -------
+        bool
+            Returns True if euqal probabilities, otherwise returns false.
+
+        """
 
         # Check if all properties are equal
         return  self.north_percentage == other.north_percentage and \
@@ -313,16 +530,49 @@ Chance of west travel: {}""".format(
                 self.west_percentage == other.west_percentage
 
 
-
 class Position():
+    """
+    A class representing a position within a 2-dimensional plane.
+    
+    Public Methods:
+        
+        equals - returns whether one instance equals another
+        
+    Public Static Methods:
+        
+        create_from - creates a new instance from the given Position
+    """
 
     def __init__(self, x, y):
+        """
+        Create a new Position instance.
 
+        Parameters
+        ----------
+        x : int
+            x-axis position.
+        y : int
+            y-axis position.
+
+        Returns
+        -------
+        None.
+
+        """
         # Set the position properties
         self._x = x
         self._y = y
 
     def __str__(self):
+        """
+        Get a string representation of a Position.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
         return """{},{}""".format(self.x, self.y)
 
     @property
@@ -368,20 +618,78 @@ class Position():
         del self._y
 
     def equals(self, other):
+        """
+        Check if the current Positionosition is equal to the specified Position.
+
+        Parameters
+        ----------
+        other : agentframework.Position
+            The object to compare.
+
+        Returns
+        -------
+        bool
+            Returns True if euqal positions, otherwise returns false.
+
+        """
 
         # Check if all properties are equal
         return self.x == other.x and self.y == other.y
 
     @staticmethod
     def create_from(original):
+        """
+        Create a new instance from the specified position.
 
+        Parameters
+        ----------
+        original : agentframework.Position
+            The position to copy.
+
+        Returns
+        -------
+        agentframework.Position
+            The new Position instance.
+
+        """
         # Return a copy of the provided position
         return Position(original.x, original.y)
 
 
 class Environment():
+    """
+    A class representing a 2-dimensional plane.
+    
+    Public Methods:
+        
+        contains - returns whether a position is within the environment bounds.
+        
+    Public Static Methods:
+        
+        create_from_size -  creates a new instance using the specified
+                            dimensions.
+    """
 
     def __init__(self, plane):
+        """
+        Create a new Environment instance
+
+        Parameters
+        ----------
+        plane : list[list[int]]
+            2-dimensional array representing the environment plane.
+
+        Raises
+        ------
+        Exception
+            Raises an exception when the specified plane is not a 2-dimensional
+            array.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Check that a valid plane is passed
         if  not isinstance(plane, list) or \
@@ -395,6 +703,16 @@ class Environment():
         self._width = len(self._plane[0])
 
     def __str__(self):
+        """
+        Get a string representation of an environment.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+
         return """Size: {}x{}""".format(
             self._width,
             self._height
@@ -443,12 +761,45 @@ class Environment():
         del self._height
 
     def contains(self, position):
+        """
+        Check if the specified position is within the environment.
+
+        Parameters
+        ----------
+        position : agentframework.Position
+            The position to check.
+
+        Returns
+        -------
+        bool
+            Returns True if the position lies within the environment bounds,
+            otherwise returns False.
+
+        """
 
         # Check if the agent position is within the environment bounds
         return position.y < self.height and position.x < self.width
 
     @staticmethod
     def create_from_size(width, height, initial_value=0):
+        """
+        Create a new environment from the specified dimensions.
+
+        Parameters
+        ----------
+        width : int
+            Environment x-axis length.
+        height : int
+            Environment y-axis length.
+        initial_value : int, optional
+            Initial environment cell value. The default is 0.
+
+        Returns
+        -------
+        agentframework.Environment
+            A new Environment instance of the given size.
+
+        """
 
         # Create initial plane array
         plane = []
@@ -468,14 +819,46 @@ class Environment():
 
 
 class BombEnvironment(Environment):
+    """
+    A class representing a an environment that has a bomb location.
+            
+    Public Static Methods:
+        
+        create_from_file -  creates a new instance from the specified
+                            raster text file.
+    """
 
     def __init__(self, plane, bomb_position):
+        """
+        Create a new BombEnvironment instance.
+
+        Parameters
+        ----------
+        plane : list[list[int]]
+            2-dimensional array representing the environment plane.
+
+        bomb_position : agentframework.Position
+            The location of the bomb.
+
+        Returns
+        -------
+        None.
+
+        """
         super().__init__(plane)
 
         # Set the bomb position property
         self._bomb_position = bomb_position
 
     def __str__(self):
+        """
+        Get a string representation of a BombEnvironment.
+
+        Returns
+        -------
+        None.
+
+        """
         return """Size: {}x{}
 Bomb Position: {}""".format(
     self._width,
@@ -499,6 +882,32 @@ Bomb Position: {}""".format(
 
     @staticmethod
     def create_from_file(file_path, bomb_position_mark=DEFAULT_BOMB_POSITION_MARK):
+        """
+        Create a new BombEnvironment from the provided raster text file path.
+        
+        The input file should be a text-formatted raster, where each line
+        in the file contains a space-delimited row of cell values.
+
+        Parameters
+        ----------
+        file_path : str
+            Path to the bomb environment raster file.
+        bomb_position_mark : int, optional
+            The cell value that indicates the bomb location.
+            The default is agentframework.DEFAULT_BOMB_POSITION_MARK.
+
+        Raises
+        ------
+        Exception
+            An exception is raised when the file cannot be read or does not
+            have a bomb location specified.
+
+        Returns
+        -------
+        agentframework.BombEnvironment
+            A new BombEnvironment instance.
+
+        """
 
         # Initialize the environment plane
         environment_plane = []
