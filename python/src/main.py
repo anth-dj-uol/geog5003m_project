@@ -189,7 +189,7 @@ class Controller():
             raise Exception("Max number of iterations must be an integer")
         
         # Ensure that the value is greater than or equal to 0
-        if max_num_of_iterations < 0:
+        if max_num_of_iterations is not None and max_num_of_iterations < 0:
             raise Exception("Max number of iterations must be greater than 0")
 
         # Validate and get particle fall up percentage
@@ -219,7 +219,7 @@ class Controller():
             raise Exception("Number of particles must be an integer")
 
         # Ensure that the value is greater than or equal to 0
-        if num_of_particles < 0:
+        if num_of_particles is not None and num_of_particles < 0:
             raise Exception("Number of particles must be greater than 0")
 
         # Validate and get building height in metres
@@ -231,12 +231,12 @@ class Controller():
             raise Exception("Building height must be an integer")
 
         # Ensure that the value is greater than or equal to 0
-        if building_height_metres < 0:
+        if building_height_metres is not None and building_height_metres < 0:
             raise Exception("Building height must be greater than 0")
 
         # Validate particle fall percentage sum
         particle_fall_sum = up_percentage + down_percentage + no_change_percentage
-        if particle_fall_sum != 100:
+        if particle_fall_sum is not None and particle_fall_sum != 100:
             raise Exception(f"Particle fall percentage values must sum to 100 (currently {particle_fall_sum})")
 
         # Validate wind direction percentage sum
@@ -368,18 +368,24 @@ class Controller():
         """
         # Set the default percentage value as None to indicate no change
         percentage = None
+        
+        # Set the error message
+        error_message = "{} must be an integer from 0-100".format(entry_field_description)
 
         # Check if the percentage text contains a value
         if len(percentage_text) > 0:
             try:
                 # Attempt to parse an integer from the text value
-               percentage = int(percentage_text)
+                percentage = int(percentage_text)
+
+                # Ensure that the percentage value is between 0 and 100
+                if percentage < 0 or percentage > 100:
+                    raise Exception(error_message)
             except:
-                raise Exception("{} must be an integer between 0-100".format(entry_field_description))
-        
-        # Ensure that the percentage value is between 0 and 100
-        if percentage < 0 or percentage > 100:
-            raise Exception("{} must be between 0-100".format(entry_field_description))
+                raise Exception(error_message)
+        else:
+            # Return an error if a value is not present
+            raise Exception(error_message)
 
         # Return the percentage integer value
         return percentage
