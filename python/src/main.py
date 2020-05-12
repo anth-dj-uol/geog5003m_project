@@ -102,7 +102,7 @@ class Controller():
 
         # Check that there exists a result to save
         if self.model.result_environment is None:
-            self.view.show_error("The model must be run before saving the result.")
+            self.view.alert("The model must be run before saving the result.")
         else:
             # Ask user for the new file location
             logger.log("Prompting user for file location.")
@@ -116,7 +116,7 @@ class Controller():
                 logger.log("Completed file write as text.")
 
                 # Display a success message
-                self.view.show_info("File saved successfully.")
+                self.view.alert("File saved successfully.", is_error=False)
 
 
     def load_parameters(self):
@@ -137,7 +137,7 @@ class Controller():
             self._reset_model()
             
         except Exception as e:
-            self.view.show_error(e)
+            self.view.alert(e)
 
 
     def update_parameters(self):

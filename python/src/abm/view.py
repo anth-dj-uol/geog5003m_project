@@ -26,8 +26,30 @@ COLOR_MAP.set_under(color='grey')
 
 
 class View():
+    """
+    Implementation of an agent-based model view.
+    
+    Public Methods:
+
+        alert -     display an alert message
+        
+        display -       display the model simulation in a plot
+    """
 
     def __init__(self, controller):
+        """
+        Create a new View instance.
+
+        Parameters
+        ----------
+        controller : Controller
+            Back-reference to the view controller.
+
+        Returns
+        -------
+        None.
+
+        """
 
         logger.log("Instantiating a View.")
         
@@ -127,64 +149,25 @@ class View():
         self.canvas = canvas
 
 
-    def show_error(self, message):
+    def alert(self, message, is_error=True):
         """
-        Display error message
-
-        Parameters
-        ----------
-        message : str
-            Error message to be displayed.
-
-        Returns
-        -------
-        None.
-
-        """
-        
-        tkinter.messagebox.showerror("Error", message)
-
-    def show_info(self, message):
-        """
-        Display info message
+        Display an alert message
 
         Parameters
         ----------
         message : str
             Info message to be displayed.
+        is_error : bool
+            True if an error message should be displayed, otherwise an info
+            message is displayed.
 
         Returns
         -------
         None.
 
         """
-        
-        tkinter.messagebox.showinfo("Info", message)
-
-
-    def _on_close(self):
-        
-        logger.log("Shutting down program.")
-        
-        # Close all open figures
-        matplotlib.pyplot.close('all')
-        
-        # Quit the GUI program and free up memory
-        self.root.quit()
-        self.root.destroy()
-
-
-    def _on_run_model(self):
-        self.controller.run_model()
-
-    def _on_save_model(self):
-        self.controller.save_model()
-
-    def _on_exit(self):
-        self._on_close()
-
-    def _on_load_parameters(self):
-        self.controller.load_parameters()
+        message_type = "Error" if is_error else "Info"
+        tkinter.messagebox.showinfo(message_type, message)
 
     def display(self, environment, bomb_position):
         """
@@ -212,6 +195,82 @@ class View():
         # Render the bomb location
         matplotlib.pyplot.scatter(bomb_position.x, bomb_position.y, color='red')
 
+
+    def _on_close(self):
+        """
+        Handle the application close event.
+        
+        This method closes the GUI and cleans up any resources.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        logger.log("Shutting down program.")
+        
+        # Close all open figures
+        matplotlib.pyplot.close('all')
+        
+        # Quit the GUI program and free up memory
+        self.root.quit()
+        self.root.destroy()
+
+
+    def _on_run_model(self):
+        """
+        Handle the model run event.
+        
+        This method triggers a model simulation.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.controller.run_model()
+
+    def _on_save_model(self):
+        """
+        Handle the save model event.
+        
+        This method triggers an event to prompt the user for a file
+        location to save the particle density raster data.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.controller.save_model()
+
+    def _on_exit(self):
+        """
+        Handle an exit event.
+        
+        This method causes the program to close.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._on_close()
+
+    def _on_load_parameters(self):
+        """
+        Handle the load parameters event.
+        
+        This method triggers an update of the model parameters from values
+        set in the GUI entry fields.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.controller.load_parameters()
 
     def _insert_labelled_entry(self, row, label, default_value="", label_row=0, 
                                label_column=0, entry_row=0, entry_column=1):
