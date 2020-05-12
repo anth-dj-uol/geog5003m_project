@@ -21,8 +21,33 @@ DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + 
     os.sep + '../wind.raster'
 
 class Model():
+    """
+    Implementation of an agent-based model.
+    
+    Public Methods:
+        
+        initialize -        initializes the model instance
+                    
+        run -               run a model simulation
+        
+        update_parameters - update the model parameters
+    """
 
     def __init__(self, parameters=None):
+        """
+        Create a new Model instance.
+
+        Parameters
+        ----------
+        parameters : Parameters, optional
+            Used as the model parameters, or default parameters are used if 
+            None is specified. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
 
         logger.log("Instantiating a Model.")
 
@@ -90,6 +115,15 @@ class Model():
 
 
     def initialize(self):
+        """
+        Creates a new list of model agents using the currently configured
+        parameters.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Set the model agents
         self._agents = self._create_agents(self._parameters.num_of_particles)
@@ -99,6 +133,17 @@ class Model():
 
 
     def run(self):
+        """
+        Run a model simulation.
+        
+        The resulting particle density environment will be stored in the model.
+
+        Returns
+        -------
+        agentframework.Environment
+            The restuling particle density environment.
+
+        """
 
         logger.log("Starting model simulation...")
 
@@ -150,6 +195,27 @@ class Model():
         building_height_metres,
         max_num_of_iterations
     ):
+        """
+        Update the model parameters
+
+        Parameters
+        ----------
+        particle_fall_settings : agentframework.ParticleFallSettings
+            The particle fall settings.
+        wind_settings : agentframework.WindSettings
+            The wind settings.
+        num_of_particles : int
+            The number of particles to simulate.
+        building_height_metres : int
+            The building height, used as the initial partical heights.
+        max_num_of_iterations : int
+            The maximum number of iterations allowed in a simulation.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Update the model parameter values
         self.parameters.particle_fall_settings = particle_fall_settings
@@ -160,6 +226,18 @@ class Model():
 
 
     def _get_particle_density_environment(self):
+        """
+        Create a particle density environment.
+        
+        Each cell in the environment will contain a value representing the
+        number of particles that have landed at that position.
+
+        Returns
+        -------
+        environment : agentframework.Environment
+            The resulting particle density environment.
+
+        """
 
         # Create a new environment using the size of the bomb environment
         environment = agentframework.Environment.create_from_size(
@@ -179,6 +257,15 @@ class Model():
         return environment
 
     def _get_default_parameters(self):
+        """
+        Get the default model parameters.
+
+        Returns
+        -------
+        Parameters
+            The default model parameters.
+
+        """
 
         # Return default parameters
         return Parameters(
@@ -191,6 +278,20 @@ class Model():
         )
 
     def _create_agents(self, num_of_agents):
+        """
+        Create a list of agents.
+
+        Parameters
+        ----------
+        num_of_agents : int
+            Number of agents to create.
+
+        Returns
+        -------
+        agents : list[agentframework.Agent]
+            A list of agents.
+
+        """
 
         # Initialize agents list
         agents = []
@@ -209,9 +310,34 @@ class Model():
 
 
 class Parameters():
+    """
+    A collection of model parameters.
+    """
 
     def __init__(self, particle_fall_settings, wind_settings, environment, num_of_particles, building_height_metres, max_num_of_iterations):
+        """
+        Create a new Parameters instance.
 
+        Parameters
+        ----------
+        particle_fall_settings : agentframework.ParticleFallSettings
+            The particle fall settings.
+        wind_settings : agentframework.WindSettings
+            The wind settings.
+        environment : agentframework.BombEnvironment
+            The bomb environment.
+        num_of_particles : int
+            The number of particles in the model.
+        building_height_metres : int
+            The building height at which the bacterial bomb is released.
+        max_num_of_iterations : int
+            The maximum number of iterations allowed in the simulation.
+
+        Returns
+        -------
+        None.
+
+        """
         # Initialize the parameters properties
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
@@ -221,6 +347,14 @@ class Parameters():
         self._max_num_of_iterations = max_num_of_iterations
 
     def __str__(self):
+        """
+        Get a string representation of the parameters.
+
+        Returns
+        -------
+        None.
+
+        """
         return \
 """Particle Fall Settings
 {}
