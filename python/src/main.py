@@ -14,8 +14,38 @@ from abm import agentframework, model, view, logger
 DEFAULT_SAVE_FILE_EXTENSION = ".raster"
 
 class Controller():
+    """
+    The Controller class coordinates communication between the given Model
+    and View. It handles events that are triggered from the View and also
+    propagates changes that occur in the Model.
+    
+    Public Methods:
+        
+        run_model - run the model simulation
+        
+        save_model - save model simulation result as a raster text file
+
+        load_parameters - load the model parameters from the view
+
+        update_parameters - updates the model parameters from the view values
+    """
 
     def __init__(self, model, view_class):
+        """
+        Create a new Controller instance.
+
+        Parameters
+        ----------
+        model : agentframework.Model
+            The agent-based model.
+        view_class : view.View
+            The view that can visualize the agent-based model.
+
+        Returns
+        -------
+        None.
+
+        """
 
         logger.log("Instantiating a Controller.")
 
@@ -28,21 +58,47 @@ class Controller():
         self._update_parameters_view()
         self.view.root.mainloop()
 
+
     def run_model(self):
+        """
+        Run the model with its current parameters.
+        
+        This will display the model simulation results in the attached View.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Reset the model
-        self.reset_model()
+        self._reset_model()
 
         # Run the model simulation
         particle_density_environment = self.model.run()
 
         # Display the particle density plot
-        self.view.display(particle_density_environment, self.model.parameters.environment.bomb_position)
+        self.view.display(
+            particle_density_environment,
+            self.model.parameters.environment.bomb_position
+        )
 
         # Render view
         self.view.canvas.draw()
 
+
     def save_model(self):
+        """
+        Prompt the user with a file save dialog.
+        
+        The selected file will have the current model simulation 
+        particle density raster written in text format.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # Check that there exists a result to save
         if self.model.result_environment is None:
@@ -50,55 +106,17 @@ class Controller():
         else:
             # Ask user for the new file location
             logger.log("Prompting user for file location.")
-            file = tkinter.filedialog.asksaveasfile(defaultextension=DEFAULT_SAVE_FILE_EXTENSION)
+            file = tkinter.filedialog.asksaveasfile(
+                defaultextension=DEFAULT_SAVE_FILE_EXTENSION)
             if file is not None:
 
                 # Write the environment as text
                 logger.log("Writing result environment contents...")
-                self.save_environment_as_text(file, self.model.result_environment)
+                self._save_environment_as_text(file, self.model.result_environment)
                 logger.log("Completed file write as text.")
 
                 # Display a success message
                 self.view.show_info("File saved successfully.")
-
-    def save_environment_as_text(self, file, environment):
-
-        # Iterate through each row in the environment
-        for row in environment.plane:
-
-            # Iterate through each cell in the environment
-            for column in row:
-
-                # Write out the cell value
-                file.write(str(column) + " ")
-            
-            # Complete the row
-            file.write("\n")
-
-    def reset_model(self):
-        
-        logger.log("Resetting model.")
-        
-        # Initialize the model agents
-        self.model.initialize()
-
-        # Update the view
-        self._update_view()
-        self.view.canvas.draw()
-
-        logger.log("Model has been reset.\n{}", self.model)
-
-
-    def _update_view(self):
-        """
-        Update the view with the current model state
-
-        Returns
-        -------
-        None.
-
-        """
-        self.view.display(self.model.parameters.environment, self.model.parameters.environment.bomb_position)
 
 
     def load_parameters(self):
@@ -116,7 +134,7 @@ class Controller():
             self.update_parameters()
             
             # Reset current model
-            self.reset_model()
+            self._reset_model()
             
         except Exception as e:
             self.view.show_error(e)
@@ -124,9 +142,10 @@ class Controller():
 
     def update_parameters(self):
         """
-        Update the model parameters from values specified in the GUI.
+        Update the model parameters from values specified in the View.
         
-        Will raise an exception when a parameter cannot be updated correctly.
+        This method will raise an exception when a parameter cannot be updated
+        correctly.
 
         Returns
         -------
@@ -221,7 +240,8 @@ class Controller():
             raise Exception(f"Particle fall percentage values must sum to 100 (currently {particle_fall_sum})")
 
         # Validate wind direction percentage sum
-        wind_direction_sum = north_percentage + east_percentage + south_percentage + west_percentage
+        wind_direction_sum = north_percentage + east_percentage + \
+            south_percentage + west_percentage
         if wind_direction_sum != 100:
             raise Exception(f"Wind direction percentage values must sum to 100 (currently: {wind_direction_sum})")
 
@@ -247,8 +267,105 @@ class Controller():
         self._update_parameters_view()
 
 
-    def _get_percentage_integer(self, percentage_text, entry_field_description):
+    def _reset_model(self):
+        """
+        Reset the current model state.
+        
+        This method will recreate all configured agents and update the View.
 
+        Returns
+        -------
+        None.
+
+        """
+
+        logger.log("Resetting model.")
+        
+        # Initialize the model agents
+        self.model.initialize()
+
+        # Update the view
+        self._update_view()
+        self.view.canvas.draw()
+
+        logger.log("Model has been reset.\n{}", self.model)
+
+
+    def _save_environment_as_text(self, file, environment):
+        """
+        Write the provided environment to a file.
+        
+        This method will create a raster file in text format, where each line
+        contains a space-delimited list of cell integer values representing
+        particle density. The cell value equals the number of particles that
+        landed in that cell.
+
+        Parameters
+        ----------
+        file : file object
+            The file that will be written to.
+        environment : agentframework.Environment
+            The environment that will be written to the file.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # Iterate through each row in the environment
+        for row in environment.plane:
+
+            # Iterate through each cell in the environment
+            for column in row:
+
+                # Write out the cell value
+                file.write(str(column) + " ")
+            
+            # Complete the row
+            file.write("\n")
+
+
+    def _update_view(self):
+        """
+        Update the view with the current model state
+
+        Returns
+        -------
+        None.
+
+        """
+
+        self.view.display(self.model.parameters.environment, self.model.parameters.environment.bomb_position)
+
+
+    def _get_percentage_integer(self, percentage_text, entry_field_description):
+        """
+        Get the integer percentage value.
+        
+        This method will return an integer percentage value between 0-100 that
+        is read from the specified string. An exception is raised if the
+        provided string value cannot be interpreted as a percentage integer.
+
+        Parameters
+        ----------
+        percentage_text : str
+            The integer percentage text value.
+        entry_field_description : str
+            The message used if an error occurs.
+
+        Raises
+        ------
+        Exception
+            Occurs when the string value cannot be interpreted as a percentage
+            integer value.
+
+        Returns
+        -------
+        percentage : int
+            The percentage value stored as an integer between 0-100.
+
+        """
         # Set the default percentage value as None to indicate no change
         percentage = None
 
@@ -313,11 +430,25 @@ class Controller():
 
 
 def main():
+    """
+    Launch the program GUI.
+    
+    This function will instantiate the Model-View-Controller pattern.
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    # Enable logging
     logger.configure(True)
-    logger.log("Starting Bacterial Bomb Agent-Based Model...")
 
     # Start the GUI program
+    logger.log("Starting Bacterial Bomb Agent-Based Model...")
     Controller(model.Model(), view.View)
+
+
 
 # Run the main function when invoked as a script
 if __name__ == '__main__':
