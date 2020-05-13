@@ -19,10 +19,10 @@ from . import logger
 
 
 # Set the plot color map
-COLOR_MAP = cm.get_cmap('viridis', 255)
+COLOR_MAP = cm.get_cmap('YlOrRd', 255)
 
 # Use a grey base color to easily distinguish small amounts of particles
-COLOR_MAP.set_under(color='grey')
+COLOR_MAP.set_under(color='#CECECE')
 
 
 class View():
