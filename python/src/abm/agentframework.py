@@ -533,6 +533,7 @@ Chance of west travel: {}""".format(
 class Position():
     """
     A class representing a position within a 2-dimensional plane.
+    The plane origin is at the bottom-left corner of the environment.
     
     Public Methods:
         
@@ -925,6 +926,9 @@ Bomb Position: {}""".format(
                 # Store a reference to the current row being processed
                 row_index = 0
 
+                # Store a reference for the bomb position
+                bomb_position = None
+
                 # Read in each row and column to obtain the 2-D environment data
                 for row in reader:
                     row_list = []
@@ -937,7 +941,10 @@ Bomb Position: {}""".format(
 
                         # Store the bomb position when found
                         if value == bomb_position_mark:
-                            bomb_position = Position(column_index, row_index)
+
+                            # Store the position as a tuple, as a transformation
+                            # is needed after parsing the environment
+                            bomb_position = (column_index, row_index)
 
                         # Increment the current column index
                         column_index += 1
@@ -947,6 +954,13 @@ Bomb Position: {}""".format(
 
                     # Increment the current row index
                     row_index += 1
+
+                # Transform the position according to the plane dimensions
+                if bomb_position is not None:
+                    bomb_position = Position(
+                        bomb_position[0],
+                        len(environment_plane) - bomb_position[1]
+                    )
         except:
             # Raise an error on enviroment read failure
             raise Exception("Unable to read environment from file: {}".format(file_path))
