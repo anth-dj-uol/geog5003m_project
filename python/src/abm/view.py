@@ -124,16 +124,11 @@ class View():
             "",
             4, 2, 4, 3)
 
-        # Add a button to update parameters
-        load_button = tkinter.Button(parameters_frame, text="Update Model",
-                                     command=self._on_load_parameters)
-        load_button.grid(row=0, column=4, padx=12, rowspan=2)
-
 
         # Add a button to run the model
         run_button = tkinter.Button(parameters_frame, text="Run Model",
                                      command=self._on_run_model)
-        run_button.grid(row=2, column=4, padx=12, rowspan=2)
+        run_button.grid(row=0, column=4, padx=12, rowspan=2)
 
 
         # Add the parameters frame to the GUI
@@ -229,7 +224,10 @@ class View():
         None.
 
         """
-        self.controller.run_model()
+
+        # Only run the model if the parameters were updated successfully
+        if self.controller.load_parameters():
+            self.controller.run_model()
 
     def _on_save_model(self):
         """
@@ -258,19 +256,6 @@ class View():
         """
         self._on_close()
 
-    def _on_load_parameters(self):
-        """
-        Handle the load parameters event.
-        
-        This method triggers an update of the model parameters from values
-        set in the GUI entry fields.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.controller.load_parameters()
 
     def _insert_labelled_entry(self, row, label, default_value="", label_row=0, 
                                label_column=0, entry_row=0, entry_column=1):

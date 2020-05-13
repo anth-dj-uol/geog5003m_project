@@ -135,9 +135,13 @@ class Controller():
             
             # Reset current model
             self._reset_model()
+
+            return True
             
         except Exception as e:
             self.view.alert(e)
+
+        return False
 
 
     def update_parameters(self):
@@ -149,7 +153,9 @@ class Controller():
 
         Returns
         -------
-        None.
+        success : bool
+            Returns True if parameters are successfully updated, otherwise
+            returns False
 
         """
         
