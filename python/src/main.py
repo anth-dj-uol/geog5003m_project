@@ -195,7 +195,7 @@ class Controller():
             raise Exception("Max number of iterations must be an integer")
         
         # Ensure that the value is greater than or equal to 0
-        if max_num_of_iterations is not None and max_num_of_iterations < 0:
+        if max_num_of_iterations is not None and max_num_of_iterations <= 0:
             raise Exception("Max number of iterations must be greater than 0")
 
         # Validate and get particle fall up percentage
@@ -225,7 +225,7 @@ class Controller():
             raise Exception("Number of particles must be an integer")
 
         # Ensure that the value is greater than or equal to 0
-        if num_of_particles is not None and num_of_particles < 0:
+        if num_of_particles is not None and num_of_particles <= 0:
             raise Exception("Number of particles must be greater than 0")
 
         # Validate and get building height in metres
@@ -237,7 +237,7 @@ class Controller():
             raise Exception("Building height must be an integer")
 
         # Ensure that the value is greater than or equal to 0
-        if building_height_metres is not None and building_height_metres < 0:
+        if building_height_metres is not None and building_height_metres <= 0:
             raise Exception("Building height must be greater than 0")
 
         # Validate particle fall percentage sum
