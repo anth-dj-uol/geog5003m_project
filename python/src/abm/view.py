@@ -72,7 +72,6 @@ class View():
         root.config(menu=menubar)
         model_menu = tkinter.Menu(menubar)
         menubar.add_cascade(label="Model", menu=model_menu)
-        model_menu.add_command(label="Run model", command=self._on_run_model)
         model_menu.add_command(label="Save as text...", command=self._on_save_model)
         model_menu.add_command(label="Exit", command=self._on_exit)
         
