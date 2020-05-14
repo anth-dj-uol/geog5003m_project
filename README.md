@@ -135,6 +135,7 @@ The project file structure is as follows:
 
 - `.gitignore` - contains information on files ignored by Git
 - `LICENSE.md` - the license file
+- `Project Development Process.pdf` - a document outlining the project development process
 - `README.md` - the README file
 - `screenshot.png` - a screenshot of the program GUI
 - `python` - the source code directory
