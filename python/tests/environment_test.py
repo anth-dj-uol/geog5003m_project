@@ -8,7 +8,7 @@ Environment unit tests
 
 import unittest
 
-from python.src.abm import agentframework
+from python.src.simulation import particleframework
 
 class EnvironmentTestCase(unittest.TestCase):
 
@@ -21,7 +21,7 @@ class EnvironmentTestCase(unittest.TestCase):
         ]
 
         # Create the environment
-        environment = agentframework.Environment(plane)
+        environment = particleframework.Environment(plane)
 
         # Verify the resulting environment
         self.assertIsNotNone(environment)
@@ -36,7 +36,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
         try:
             # Create the environment
-            environment = agentframework.Environment(plane)
+            environment = particleframework.Environment(plane)
             self.fail()
         except Exception as e:
             self.assertIsNotNone(e)
@@ -51,10 +51,10 @@ class EnvironmentTestCase(unittest.TestCase):
         ]
 
         # Create the environment
-        environment = agentframework.Environment(plane)
+        environment = particleframework.Environment(plane)
 
         # Verify the contains query
-        self.assertTrue(environment.contains(agentframework.Position(1,1)))
+        self.assertTrue(environment.contains(particleframework.Position(1,1)))
 
 
     def test_contains_negative(self):
@@ -66,10 +66,10 @@ class EnvironmentTestCase(unittest.TestCase):
         ]
 
         # Create the environment
-        environment = agentframework.Environment(plane)
+        environment = particleframework.Environment(plane)
         
         # Verify the contains query
-        self.assertFalse(environment.contains(agentframework.Position(10,1)))
+        self.assertFalse(environment.contains(particleframework.Position(10,1)))
 
     def test_create_from_size(self):
 
@@ -79,7 +79,7 @@ class EnvironmentTestCase(unittest.TestCase):
         initial_value = 42
 
         # Create the environment
-        environment = agentframework.Environment.create_from_size(width, height, initial_value)
+        environment = particleframework.Environment.create_from_size(width, height, initial_value)
 
         # Verify the resulting environment
         self.assertIsNotNone(environment)

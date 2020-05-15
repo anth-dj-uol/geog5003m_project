@@ -3,14 +3,14 @@
 """
 Model module
 
-Provides classes used to represent agent-based models.
+Provides classes used to represent the chemical weapon fallout model.
 
 @author: Anthony Jarrett
 """
 
 import os
 
-from . import agentframework, logger
+from . import particleframework, logger
 
 
 # Initialize default values
@@ -22,7 +22,7 @@ DEFAULT_BOMB_LOCATION_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + 
 
 class Model():
     """
-    Implementation of an agent-based model.
+    Implementation of a chemical weapon fallout model.
     
     Public Methods:
         
@@ -58,7 +58,7 @@ class Model():
         # Set the model parameters
         self._parameters = parameters
 
-        # Initialize the model agents
+        # Initialize the model particles
         self.initialize()
 
 
@@ -86,18 +86,18 @@ class Model():
         del self._parameters
 
     @property
-    def agents(self):
+    def particles(self):
         """
-        Get the model agents.
+        Get the model particles.
         """
-        return self._agents
+        return self._particles
 
-    @agents.deleter
-    def agents(self):
+    @particles.deleter
+    def particles(self):
         """
-        Delete the model agents property.
+        Delete the model particles property.
         """
-        del self._agents
+        del self._particles
 
     @property
     def result_environment(self):
@@ -116,7 +116,7 @@ class Model():
 
     def initialize(self):
         """
-        Creates a new list of model agents using the currently configured
+        Creates a new list of model particles using the currently configured
         parameters.
 
         Returns
@@ -125,8 +125,8 @@ class Model():
 
         """
 
-        # Set the model agents
-        self._agents = self._create_agents(self._parameters.num_of_particles)
+        # Set the model particles
+        self._particles = self._create_particles(self._parameters.num_of_particles)
 
         # Clear the result environment
         self._result_environment = None
@@ -140,7 +140,7 @@ class Model():
 
         Returns
         -------
-        agentframework.Environment
+        particleframework.Environment
             The restuling particle density environment.
 
         """
@@ -153,19 +153,19 @@ class Model():
         # Track the number of particles that did not land in time
         num_particles_still_in_air = 0
 
-        for agent in self._agents:
+        for particle in self._particles:
 
             # Track the iteration count
             iteration_count = 0
 
             # Run model iterations while at least one particle can move
-            while agent.can_fall():
+            while particle.can_fall():
 
                 # Move the particle according to the wind settings
-                agent.move()
+                particle.move()
 
                 # Drop the particle according to the particle fall settings
-                agent.fall()
+                particle.fall()
 
                 # Increment the iteration count
                 iteration_count += 1
@@ -180,7 +180,7 @@ class Model():
                 max_iteration_count = iteration_count
 
         logger.log("{} particles did no reach the ground in time", num_particles_still_in_air)
-        logger.log("Done simulation. Last particle reached the ground at {} seconds", max_iteration_count)
+        logger.log("Done simulation (longest particle fall took {} seconds)", max_iteration_count)
 
         # Set and return the resulting particle density environment
         self._result_environment = self._get_particle_density_environment()
@@ -200,14 +200,14 @@ class Model():
 
         Parameters
         ----------
-        particle_fall_settings : agentframework.ParticleFallSettings
+        particle_fall_settings : particleframework.ParticleFallSettings
             The particle fall settings.
-        wind_settings : agentframework.WindSettings
+        wind_settings : particleframework.WindSettings
             The wind settings.
         num_of_particles : int
             The number of particles to simulate.
         building_height_metres : int
-            The building height, used as the initial partical heights.
+            The building height, used as the initial particle heights.
         max_num_of_iterations : int
             The maximum number of iterations allowed in a simulation.
 
@@ -234,25 +234,25 @@ class Model():
 
         Returns
         -------
-        environment : agentframework.Environment
+        environment : particleframework.Environment
             The resulting particle density environment.
 
         """
 
         # Create a new environment using the size of the bomb environment
-        environment = agentframework.Environment.create_from_size(
+        environment = particleframework.Environment.create_from_size(
             self._parameters._environment.width,
             self._parameters._environment.height
         )
         
-        # Increment the environment value at the position of each agent
-        for agent in self._agents:
+        # Increment the environment value at the position of each particle
+        for particle in self._particles:
 
-            # Check if the agent position is within the environment bounds
-            if environment.contains(agent.position):
+            # Check if the particle position is within the environment bounds
+            if environment.contains(particle.position):
 
                 # Increment the environment location value
-                environment.plane[agent.position.y][agent.position.x] += 1
+                environment.plane[particle.position.y][particle.position.x] += 1
 
         return environment
 
@@ -269,44 +269,44 @@ class Model():
 
         # Return default parameters
         return Parameters(
-            agentframework.ParticleFallSettings(),
-            agentframework.WindSettings(),
-            agentframework.BombEnvironment.create_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH),
+            particleframework.ParticleFallSettings(),
+            particleframework.WindSettings(),
+            particleframework.BombEnvironment.create_from_file(DEFAULT_BOMB_LOCATION_FILE_PATH),
             DEFAULT_NUM_OF_PARTICLES,
             DEFAULT_BUILDING_HEIGHT_METRES,
             DEFAULT_MAX_NUM_OF_ITERATIONS
         )
 
-    def _create_agents(self, num_of_agents):
+    def _create_particles(self, num_of_particles):
         """
-        Create a list of agents.
+        Create a list of particles.
 
         Parameters
         ----------
-        num_of_agents : int
-            Number of agents to create.
+        num_of_particles : int
+            Number of particles to create.
 
         Returns
         -------
-        agents : list[agentframework.Agent]
-            A list of agents.
+        particles : list[particleframework.Particle]
+            A list of particles.
 
         """
 
-        # Initialize agents list
-        agents = []
+        # Initialize particles list
+        particles = []
 
-        # Create each agent
-        for i in range(num_of_agents):
-            agents.append(agentframework.Agent(
+        # Create each particle
+        for i in range(num_of_particles):
+            particles.append(particleframework.Particle(
                 self._parameters.particle_fall_settings,
                 self._parameters.wind_settings,
                 self._parameters.environment.bomb_position,
                 self._parameters.building_height_metres
             ))
 
-        # Return the resulting list of agents
-        return agents
+        # Return the resulting list of particles
+        return particles
 
 
 class Parameters():
@@ -320,11 +320,11 @@ class Parameters():
 
         Parameters
         ----------
-        particle_fall_settings : agentframework.ParticleFallSettings
+        particle_fall_settings : particleframework.ParticleFallSettings
             The particle fall settings.
-        wind_settings : agentframework.WindSettings
+        wind_settings : particleframework.WindSettings
             The wind settings.
-        environment : agentframework.BombEnvironment
+        environment : particleframework.BombEnvironment
             The bomb environment.
         num_of_particles : int
             The number of particles in the model.

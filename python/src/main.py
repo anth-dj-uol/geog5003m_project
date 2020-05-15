@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Bacterial Bomb Agent-Based Model
+Chemical Weapon Fallout Simulator
 
 A project for the University of Leeds GEOG5003M course.
 
@@ -9,7 +9,7 @@ A project for the University of Leeds GEOG5003M course.
 """
 
 import tkinter
-from abm import agentframework, model, view, logger
+from simulation import particleframework, model, view, logger
 
 DEFAULT_SAVE_FILE_EXTENSION = ".raster"
 
@@ -36,10 +36,10 @@ class Controller():
 
         Parameters
         ----------
-        model : agentframework.Model
-            The agent-based model.
+        model : particleframework.Model
+            A simulation model.
         view_class : view.View
-            The view that can visualize the agent-based model.
+            A view that can visualize the model.
 
         Returns
         -------
@@ -253,12 +253,12 @@ class Controller():
 
         # Update model parameters
         self.model.update_parameters(
-            agentframework.ParticleFallSettings(
+            particleframework.ParticleFallSettings(
                 up_percentage,
                 down_percentage,
                 no_change_percentage
             ),
-            agentframework.WindSettings(
+            particleframework.WindSettings(
                 north_percentage,
                 east_percentage,
                 south_percentage,
@@ -277,7 +277,7 @@ class Controller():
         """
         Reset the current model state.
         
-        This method will recreate all configured agents and update the View.
+        This method will recreate all configured particles and update the View.
 
         Returns
         -------
@@ -287,7 +287,7 @@ class Controller():
 
         logger.log("Resetting model.")
         
-        # Initialize the model agents
+        # Initialize the model particles
         self.model.initialize()
 
         # Update the view
@@ -310,7 +310,7 @@ class Controller():
         ----------
         file : file object
             The file that will be written to.
-        environment : agentframework.Environment
+        environment : particleframework.Environment
             The environment that will be written to the file.
 
         Returns
@@ -457,7 +457,7 @@ def main():
     logger.configure(True)
 
     # Start the GUI program
-    logger.log("Starting Bacterial Bomb Agent-Based Model...")
+    logger.log("Starting the Chemical Weapon Fallout Simulator...")
     Controller(model.Model(), view.View)
 
 

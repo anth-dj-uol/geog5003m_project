@@ -8,7 +8,7 @@ Wind Settings unit tests
 
 import unittest
 
-from python.src.abm import agentframework
+from python.src.simulation import particleframework
 
 class WindSettingsTestCase(unittest.TestCase):
 
@@ -21,7 +21,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 65
 
         # Create wind settings
-        wind_settings = agentframework.WindSettings(
+        wind_settings = particleframework.WindSettings(
             north_percentage,
             east_percentage,
             south_percentage,
@@ -45,7 +45,7 @@ class WindSettingsTestCase(unittest.TestCase):
 
         try:
             # Create wind settings
-            agentframework.WindSettings(
+            particleframework.WindSettings(
                 north_percentage,
                 east_percentage,
                 south_percentage,
@@ -65,7 +65,7 @@ class WindSettingsTestCase(unittest.TestCase):
 
         try:
             # Create wind settings
-            agentframework.WindSettings(
+            particleframework.WindSettings(
                 north_percentage,
                 east_percentage,
                 south_percentage,
@@ -84,7 +84,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 0
 
         # Create wind settings
-        wind_settings = agentframework.WindSettings(
+        wind_settings = particleframework.WindSettings(
             north_percentage,
             east_percentage,
             south_percentage,
@@ -93,7 +93,7 @@ class WindSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_direction = wind_settings.get_next()
-        self.assertEqual(next_direction, agentframework.Direction.NORTH)
+        self.assertEqual(next_direction, particleframework.Direction.NORTH)
 
     def test_get_next_east(self):
 
@@ -104,7 +104,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 0
 
         # Create wind settings
-        wind_settings = agentframework.WindSettings(
+        wind_settings = particleframework.WindSettings(
             north_percentage,
             east_percentage,
             south_percentage,
@@ -113,7 +113,7 @@ class WindSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_direction = wind_settings.get_next()
-        self.assertEqual(next_direction, agentframework.Direction.EAST)
+        self.assertEqual(next_direction, particleframework.Direction.EAST)
 
     def test_get_next_south(self):
 
@@ -124,7 +124,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 0
 
         # Create wind settings
-        wind_settings = agentframework.WindSettings(
+        wind_settings = particleframework.WindSettings(
             north_percentage,
             east_percentage,
             south_percentage,
@@ -133,7 +133,7 @@ class WindSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_direction = wind_settings.get_next()
-        self.assertEqual(next_direction, agentframework.Direction.SOUTH)
+        self.assertEqual(next_direction, particleframework.Direction.SOUTH)
 
     def test_get_next_west(self):
 
@@ -144,7 +144,7 @@ class WindSettingsTestCase(unittest.TestCase):
         west_percentage = 100
 
         # Create wind settings
-        wind_settings = agentframework.WindSettings(
+        wind_settings = particleframework.WindSettings(
             north_percentage,
             east_percentage,
             south_percentage,
@@ -153,5 +153,5 @@ class WindSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_direction = wind_settings.get_next()
-        self.assertEqual(next_direction, agentframework.Direction.WEST)
+        self.assertEqual(next_direction, particleframework.Direction.WEST)
 

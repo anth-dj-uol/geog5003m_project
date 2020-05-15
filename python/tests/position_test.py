@@ -8,7 +8,7 @@ Position unit tests
 
 import unittest
 
-from python.src.abm import agentframework
+from python.src.simulation import particleframework
 
 class PositionTestCase(unittest.TestCase):
 
@@ -19,7 +19,7 @@ class PositionTestCase(unittest.TestCase):
         y_pos = 2
 
         # Create position
-        position = agentframework.Position(x_pos, y_pos)
+        position = particleframework.Position(x_pos, y_pos)
 
         # Verfiy position coordinates
         self.assertIsNotNone(position)
@@ -34,8 +34,8 @@ class PositionTestCase(unittest.TestCase):
         y_pos = 4
 
         # Create position
-        position_a = agentframework.Position(x_pos, y_pos)
-        position_b = agentframework.Position.create_from(position_a)
+        position_a = particleframework.Position(x_pos, y_pos)
+        position_b = particleframework.Position.create_from(position_a)
 
         # Verfiy position coordinates
         self.assertIsNotNone(position_a)

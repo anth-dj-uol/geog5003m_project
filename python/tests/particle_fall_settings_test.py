@@ -8,7 +8,7 @@ Particle Fall Settings unit tests
 
 import unittest
 
-from python.src.abm import agentframework
+from python.src.simulation import particleframework
 
 class ParticleFallSettingsTestCase(unittest.TestCase):
 
@@ -20,7 +20,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
         no_change_percentage = 70
 
         # Create particle fall settings
-        particle_fall_settings = agentframework.ParticleFallSettings(
+        particle_fall_settings = particleframework.ParticleFallSettings(
             up_percentage,
             down_percentage,
             no_change_percentage
@@ -41,7 +41,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
 
         # Create particle fall settings
         try:
-            particle_fall_settings = agentframework.ParticleFallSettings(
+            particle_fall_settings = particleframework.ParticleFallSettings(
                 up_percentage,
                 down_percentage,
                 no_change_percentage
@@ -59,7 +59,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
 
         # Create particle fall settings
         try:
-            particle_fall_settings = agentframework.ParticleFallSettings(
+            particle_fall_settings = particleframework.ParticleFallSettings(
                 up_percentage,
                 down_percentage,
                 no_change_percentage
@@ -76,7 +76,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
         no_change_percentage = 0
 
         # Create particle fall settings
-        particle_fall_settings = agentframework.ParticleFallSettings(
+        particle_fall_settings = particleframework.ParticleFallSettings(
             up_percentage,
             down_percentage,
             no_change_percentage
@@ -84,7 +84,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_fall = particle_fall_settings.get_next()
-        self.assertEqual(next_fall, agentframework.Fall.UP)
+        self.assertEqual(next_fall, particleframework.Fall.UP)
 
     def test_get_next_down(self):
 
@@ -94,7 +94,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
         no_change_percentage = 0
 
         # Create particle fall settings
-        particle_fall_settings = agentframework.ParticleFallSettings(
+        particle_fall_settings = particleframework.ParticleFallSettings(
             up_percentage,
             down_percentage,
             no_change_percentage
@@ -102,7 +102,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_fall = particle_fall_settings.get_next()
-        self.assertEqual(next_fall, agentframework.Fall.DOWN)
+        self.assertEqual(next_fall, particleframework.Fall.DOWN)
 
     def test_get_next_no_change(self):
 
@@ -112,7 +112,7 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
         no_change_percentage = 100
 
         # Create particle fall settings
-        particle_fall_settings = agentframework.ParticleFallSettings(
+        particle_fall_settings = particleframework.ParticleFallSettings(
             up_percentage,
             down_percentage,
             no_change_percentage
@@ -120,4 +120,4 @@ class ParticleFallSettingsTestCase(unittest.TestCase):
 
         # Verify the next direction
         next_fall = particle_fall_settings.get_next()
-        self.assertEqual(next_fall, agentframework.Fall.NONE)
+        self.assertEqual(next_fall, particleframework.Fall.NONE)

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Agent Framework module
+Particle Framework module
 
-Provides classes used to represent agents and their data.
+Provides classes used to represent particles and their data.
 
 @author: Anthony Jarrett
 """
@@ -26,17 +26,17 @@ DEFAULT_WIND_WEST_PERCENTAGE = 5
 DEFAULT_BOMB_POSITION_MARK = 255
 
 
-class Agent():
+class Particle():
     """
-    An implementation of a bacterial bomb partical agent.
+    An implementation of a bacterial bomb particle.
     
-    The Agent can move and fall according to the configured wind and particle
+    The particle can move and fall according to the configured wind and particle
     fall settings. The particle will start its fall from its configured
     start position and building height.
     
     Public Methods:
         
-        move -  moves the Agent one metre North, East, South or West using the
+        move -  moves the particle one metre North, East, South or West using the
                 configured wind settings probabilities.
         
         fall -  causes a particle to fall upward, downward or to have no
@@ -48,18 +48,18 @@ class Agent():
 
     def __init__(self, particle_fall_settings, wind_settings, start_position, building_height):
         """
-        Create an Agent instance.
+        Create a Particle instance.
 
         Parameters
         ----------
-        particle_fall_settings : agentframework.ParticleFallSettings
-            The particle fall settings for the agent.
-        wind_settings : agentframework.WindSettings
-            The wind settings for the agent.
-        start_position : agentframework.Position
-            The start position for the agent.
+        particle_fall_settings : particleframework.ParticleFallSettings
+            The particle fall settings for the particle.
+        wind_settings : particleframework.WindSettings
+            The wind settings for the particle.
+        start_position : particleframework.Position
+            The start position for the particle.
         building_height : int
-            The start height of the agent.
+            The start height of the particle.
 
         Returns
         -------
@@ -67,7 +67,7 @@ class Agent():
 
         """
 
-        # Set agent properties
+        # Set particle properties
         self._particle_fall_settings = particle_fall_settings
         self._wind_settings = wind_settings
         self._position = Position.create_from(start_position)
@@ -77,22 +77,22 @@ class Agent():
     @property
     def position(self):
         """
-        Get the agent position.
+        Get the particle position.
         """
         return self._position
 
     @position.deleter
     def position(self):
         """
-        Delete the agent position property.
+        Delete the particle position property.
         """
         del self._position
 
     def move(self):
         """
-        Move the agent along the environment plane.
+        Move the particle along the environment plane.
         
-        This method will move the agent North, East, South or West according
+        This method will move the particle North, East, South or West according
         to the configured wind settings probabilities.
 
         Returns
@@ -116,9 +116,9 @@ class Agent():
 
     def fall(self):
         """
-        Move the agent along the altitude plane.
+        Move the particle along the altitude plane.
         
-        This method will move the agent up, down or not move at all according
+        This method will move the particle up, down or not move at all according
         to the configured particle fall settings probabilities.
 
         Returns
@@ -189,14 +189,14 @@ class ParticleFallSettings():
         ----------
         up_percentage : int, optional
             The percentage probability that the particle will fall upwards.
-            The default is agentframework.DEFAULT_FALL_UP_PERCENTAGE.
+            The default is particleframework.DEFAULT_FALL_UP_PERCENTAGE.
         down_percentage : int, optional
             The percentage probability that the particle will fall downwards.
-            The default is agentframework.DEFAULT_FALL_DOWN_PERCENTAGE.
+            The default is particleframework.DEFAULT_FALL_DOWN_PERCENTAGE.
         no_change_percentage : int, optional
             The percentage probability that the particle will not change
             its vertical height. The default is
-            agentframework.DEFAULT_FALL_NO_CHANGE_PERCENTAGE.
+            particleframework.DEFAULT_FALL_NO_CHANGE_PERCENTAGE.
 
         Raises
         ------
@@ -251,7 +251,7 @@ Chance of no vertical movement: {}""".format(
 
         Returns
         -------
-        agentframework.Fall
+        particleframework.Fall
             The next fall direction.
 
         """
@@ -315,7 +315,7 @@ Chance of no vertical movement: {}""".format(
 
         Parameters
         ----------
-        other : agentframework.ParticleFallSettings
+        other : particleframework.ParticleFallSettings
             The object to compare.
 
         Returns
@@ -364,16 +364,16 @@ class WindSettings():
         ----------
         north_percentage : int, optional
             The percentage probability that the particle will move North.
-            The default is agentframework.DEFAULT_WIND_NORTH_PERCENTAGE.
+            The default is particleframework.DEFAULT_WIND_NORTH_PERCENTAGE.
         east_percentage : int, optional
             The percentage probability that the particle will move East.
-            The default is agentframework.DEFAULT_WIND_EAST_PERCENTAGE.
+            The default is particleframework.DEFAULT_WIND_EAST_PERCENTAGE.
         south_percentage : int, optional
             The percentage probability that the particle will move South.
-            The default is agentframework.DEFAULT_WIND_SOUTH_PERCENTAGE.
+            The default is particleframework.DEFAULT_WIND_SOUTH_PERCENTAGE.
         west_percentage : int, optional
             The percentage probability that the particle will move West.
-            The default is agentframework.DEFAULT_WIND_WEST_PERCENTAGE.
+            The default is particleframework.DEFAULT_WIND_WEST_PERCENTAGE.
 
         Raises
         ------
@@ -434,7 +434,7 @@ Chance of west travel: {}""".format(
 
         Returns
         -------
-        agentframework.Direction
+        particleframework.Direction
             The next movement direction.
 
         """
@@ -513,7 +513,7 @@ Chance of west travel: {}""".format(
 
         Parameters
         ----------
-        other : agentframework.WindSettings
+        other : particleframework.WindSettings
             The object to compare.
 
         Returns
@@ -624,7 +624,7 @@ class Position():
 
         Parameters
         ----------
-        other : agentframework.Position
+        other : particleframework.Position
             The object to compare.
 
         Returns
@@ -644,12 +644,12 @@ class Position():
 
         Parameters
         ----------
-        original : agentframework.Position
+        original : particleframework.Position
             The position to copy.
 
         Returns
         -------
-        agentframework.Position
+        particleframework.Position
             The new Position instance.
 
         """
@@ -767,7 +767,7 @@ class Environment():
 
         Parameters
         ----------
-        position : agentframework.Position
+        position : particleframework.Position
             The position to check.
 
         Returns
@@ -778,7 +778,7 @@ class Environment():
 
         """
 
-        # Check if the agent position is within the environment bounds
+        # Check if the particle position is within the environment bounds
         return position.y < self.height and position.x < self.width
 
     @staticmethod
@@ -797,7 +797,7 @@ class Environment():
 
         Returns
         -------
-        agentframework.Environment
+        particleframework.Environment
             A new Environment instance of the given size.
 
         """
@@ -838,7 +838,7 @@ class BombEnvironment(Environment):
         plane : list[list[int]]
             2-dimensional array representing the environment plane.
 
-        bomb_position : agentframework.Position
+        bomb_position : particleframework.Position
             The location of the bomb.
 
         Returns
@@ -895,7 +895,7 @@ Bomb Position: {}""".format(
             Path to the bomb environment raster file.
         bomb_position_mark : int, optional
             The cell value that indicates the bomb location.
-            The default is agentframework.DEFAULT_BOMB_POSITION_MARK.
+            The default is particleframework.DEFAULT_BOMB_POSITION_MARK.
 
         Raises
         ------
@@ -905,7 +905,7 @@ Bomb Position: {}""".format(
 
         Returns
         -------
-        agentframework.BombEnvironment
+        particleframework.BombEnvironment
             A new BombEnvironment instance.
 
         """

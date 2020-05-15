@@ -8,7 +8,7 @@ BombEnvironment unit tests
 
 import unittest
 
-from python.src.abm import agentframework
+from python.src.simulation import particleframework
 
 class BombEnvironmentTestCase(unittest.TestCase):
 
@@ -19,10 +19,10 @@ class BombEnvironmentTestCase(unittest.TestCase):
             [1, 2, 3],
             [4, 5, 6]
         ]
-        bomb_position = agentframework.Position(1, 1)
+        bomb_position = particleframework.Position(1, 1)
 
         # Create the environment
-        environment = agentframework.BombEnvironment(plane, bomb_position)
+        environment = particleframework.BombEnvironment(plane, bomb_position)
 
         # Verify the resulting environment
         self.assertIsNotNone(environment)

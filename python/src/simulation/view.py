@@ -3,7 +3,7 @@
 """
 View module
 
-Provides classes used to display agent-based models.
+Provides classes used to display models.
 
 @author: Anthony Jarrett
 """
@@ -27,7 +27,7 @@ COLOR_MAP.set_under(color='#CECECE')
 
 class View():
     """
-    Implementation of an agent-based model view.
+    Graphical view for a chemical weapon fallout model.
     
     Public Methods:
 
@@ -64,7 +64,7 @@ class View():
 
         # Create GUI window
         root = tkinter.Tk()
-        root.wm_title("Bacterial Bomb Agent-Based Model")
+        root.wm_title("Chemical Weapon Fallout Simulator")
         root.protocol("WM_DELETE_WINDOW", self._on_close)
         
         # Create menu
